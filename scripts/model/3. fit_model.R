@@ -4,7 +4,7 @@ library("bnlearn")
 df_total <- list.files('data/model_input/dataframe', full.names = TRUE) %>%
   map_dfr(read_csv)
 
-df_total <- read_csv('data/model_input/dataframe/df_input_model_1.csv')
+# df_total <- read_csv('data/model_input/dataframe/df_input_model_1.csv')
 
 df <- sample_n(df_total, 1000)
 plot(df$x, df$y)
