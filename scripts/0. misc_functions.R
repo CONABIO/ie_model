@@ -1,6 +1,6 @@
 # Load packages
 library("bnlearn")
-library("gRain")
+#library("gRain")
 library("tools")
 
 ########## functions used in the Ecological Integrity BN modelling workflow

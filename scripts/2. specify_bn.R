@@ -1,13 +1,14 @@
 # Load packages
 library("bnlearn")
-library("gRain")
+#library("gRain")
 library("tools")
+library("tidyverse")
 
 # load misc functions
-source("./R/0. misc_functions.R")
+source("scripts/0. misc_functions.R")
 
 # Read a file with an associated adjacency matrix
-adj_csv = read.table("./networks/ienet_v3.csv",
+adj_csv <- read.table("data/model_input/networks/ienet.csv",
                      header=TRUE,
                      row.names=1,
                      sep=",",
@@ -18,10 +19,10 @@ adj_csv <- adj_csv %>%
   
 
 # Initialize an empty graph of appropriate size
-bngraph = initAdj(adj_csv)
+bngraph <- initAdj(adj_csv)
 
 # Set graph arcs based on adjacency matrix
-amat(bngraph) = as.matrix(adj_csv)
+amat(bngraph) <- as.matrix(adj_csv)
 
 # Visualize graph
 plot(bngraph)

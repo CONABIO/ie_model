@@ -7,7 +7,7 @@ library("raster")
 source("./R/0. misc_functions.R")
 
 # prediction
-prediction = predict(prior,
+prediction <- predict(prior,
                      response="hemerobia_250m",
                      newdata=bnbrik_df,
                      type="distribution")
@@ -26,7 +26,7 @@ for (i in 1:nrow(probabilities)){
 ie <- unlist(ie_expectancy)
 ie <- (18-ie)/(18)
 
-final_raster = data.frame(ie=ie,x=bnbrik_df$x,y=bnbrik_df$y)
+final_raster <- data.frame(ie=ie,x=bnbrik_df$x,y=bnbrik_df$y)
 head(final_raster)
 
 coordinates(final_raster)=~x+y
@@ -37,5 +37,3 @@ projection(final_raster)=projection(bnbrik)
 # save raster
 rf <- writeRaster(final_raster, filename="ie_yucatan.tif",
                   format="GTiff", overwrite=TRUE)
-
-08:25
