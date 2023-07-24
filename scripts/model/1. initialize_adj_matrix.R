@@ -1,8 +1,23 @@
 # load packages
 library("tools")
 
+# In a matrix:
+# fix column and row names
+fixDimnames = function(adj_mat){
+  colnames(adj_mat)=fixNames(colnames(adj_mat))
+  rownames(adj_mat)=fixNames(rownames(adj_mat))
+  return(adj_mat)
+}
+# Replace spaces and points by "_", remove file extensions
+fixNames = function(string_vector){
+  string_vector = file_path_sans_ext(string_vector)
+  string_vector = gsub(" ", "_", string_vector)
+  string_vector = gsub("\\.", "_", string_vector)
+  return(string_vector)
+}
+
 # load misc functions
-source("scripts/0. misc_functions.R")
+#source("scripts/0. misc_functions.R")
 
 # List of independent variable rasters file names
 var_paths <- list_files_with_exts("data/model_input/rasters",
