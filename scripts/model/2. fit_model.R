@@ -18,15 +18,15 @@ discretizeCols <- function(bnbrik_df,
   return(bnbrik_df)
 }
 
-remove_var <- c('mad_mex_bosque','mad_mex_matorral')
-# remove_var <- c('')
+# remove_var <- c('mad_mex_bosque','mad_mex_matorral')
+remove_var <- c('')
 
 
-# df <- list.files('data/model_input/dataframe', full.names = TRUE) %>%
-  # map_dfr(read_csv)
- 
-df <- read_csv('data/model_input/df_input_model_5.csv')
+df <- list.files('data/model_input/dataframe', full.names = TRUE) %>%
+map_dfr(read_csv)
+# df <- read_csv('data/model_input/df_input_model_5.csv')
 
+# Remove unwanted variables
 df <- df[,!(names(df) %in% remove_var)]
 
 # User must know which variables are factors and coerce them to factor.
@@ -44,7 +44,7 @@ ie_adj <- read.csv("data/model_input/networks/ienet.csv", header = TRUE,
                    row.names = 1, stringsAsFactors = FALSE)
 ie_adj[is.na(ie_adj)] <- 0
 
-# Remove variables
+# Remove unwanted variables
 ie_adj <- ie_adj[!(row.names(ie_adj) %in% remove_var),!(names(ie_adj) %in% remove_var)]
 
 # Create a graph based on this adjacency matrix.
@@ -89,4 +89,7 @@ ggplot() +
   geom_spatraster(data = final_raster)
 
 # save raster
-writeRaster(final_raster, 'output/output_test.tif', overwrite=TRUE)
+writeRaster(final_raster, 'output/output_ie.tif', overwrite=TRUE)
+
+# Save model
+saveRDS(fitted, file="output/bnlearn_model.RData")
