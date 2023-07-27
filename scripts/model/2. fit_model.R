@@ -6,7 +6,7 @@ library("ggplot2")
 library("tidyterra")
 
 
-# Discretize list of numeric variables
+# Discretize list of numeric variables wder
 discretizeCols <- function(bnbrik_df, numeric_var_vec,
                           breaks_vec=rep(5,length(numeric_var_vec)),
                           method="interval"){
@@ -79,4 +79,5 @@ writeRaster(r_exp, 'output/ie_exp.tif', overwrite=TRUE)
 writeRaster(r_cat, 'output/ie_cat.tif', overwrite=TRUE)
 
 # save model
-saveRDS(fitted, file="output/prior_test.RData")
+saveRDS(fitted, file="output/fitted.RData")
+saveRDS(prior, file="output/prior.RData")
