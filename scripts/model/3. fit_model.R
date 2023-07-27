@@ -19,6 +19,8 @@ discretizeCols <- function(bnbrik_df, numeric_var_vec,
 
 # read data
 crs_text <- readRDS("data/model_input/crs_text.RData")
+ie_adj <- read.csv("data/model_input/networks/ienet.csv", header = TRUE, 
+                   row.names = 1, stringsAsFactors = FALSE)
 df <- list.files('data/model_input/dataframe', full.names = TRUE) %>%
   map_dfr(read_csv)
 # df <- read_csv('data/model_input/df_input_model_5.csv')
@@ -34,9 +36,7 @@ df <- df  %>%
 df <- discretizeCols(df,setdiff(names(df), c("x","y",
                                             "hemerobia","holdridge")))
 
-# Load adjacency matrix from csv and create a graph
-ie_adj <- read.csv("data/model_input/networks/ienet.csv", header = TRUE, 
-                   row.names = 1, stringsAsFactors = FALSE)
+# Create a graph
 ie_adj[is.na(ie_adj)] <- 0
 ie_adj <- ie_adj[!(row.names(ie_adj) %in% remove_var),!(names(ie_adj) %in% remove_var)]
 ie_graph <- empty.graph(rownames(ie_adj))
