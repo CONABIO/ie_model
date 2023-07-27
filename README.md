@@ -36,13 +36,29 @@ Se desarrolló una red bayesiana con las siguientes capas:
 
 ## Datos
 
-### Fuentes
-
-### Variables
-
 Se utilizó como proxy para la integridad ecológica, la hemerobia.
 
 ![](images/hemerobia.png)
+
+| Variable                                           | Capa                | Fuente                                       |
+|----------------------------------------------------|---------------------|----------------------------------------------|
+| Hemerobia                                          | Latente             | Uso de suelo y vegetación, INEGI             |
+| Proporción de cultivos y crecimiento herbáceo      | Intervención humana | MAD-Mex                                      |
+| Proporción de asentamientos humanos                | Intervención humana | MAD-Mex                                      |
+| Proporción de suelo desnudo                        | Intervención humana | MAD-Mex                                      |
+| Zona de vida de Holdridge                          | Contextual          | Portal de Geoinformación, CONABIO            |
+| Elevación promedio (DEM90)                         | Contextual          | Continuo de Elevaciones Mexicano, INEGI      |
+| Mínimo de elevación                                | Contextual          | Continuo de Elevaciones Mexicano, INEGI      |
+| Máximo de elevación                                | Contextual          | Continuo de Elevaciones Mexicano, INEGI      |
+| Fotosíntesis neta promedio                         | Detección de signos | MODIS/Terra Gross Primary Productivity, NASA |
+| Desviación estándar de fotosíntesis neta           | Detección de signos | MODIS/Terra Gross Primary Productivity, NASA |
+| Promedio de fotosístesis neta en estación lluviosa | Detección de signos | MODIS/Terra Gross Primary Productivity, NASA |
+| Promedio de fotosítesis neta en estación seca      | Detección de signos | MODIS/Terra Gross Primary Productivity, NASA |
+| Proporción de crecimiento arbustivo                | Detección de signos | MAD-Mex                                      |
+| Proporsión de crecimiento arbóreo tropical         | Detección de signos | MAD-Mex                                      |
+| Proporción de crecimiento arbóreo                  | Detección de signos | MAD-Mex                                      |
+| VH                                                 | Detección de signos | Sentinel-1 SAR GRD, Copernicus               |
+| VH entropía                                        | Detección de signos | Sentinel-1 SAR GRD, Copernicus               |
 
 Variables
 
