@@ -10,9 +10,7 @@
 
 <!-- ABOUT THE PROJECT -->
 
-## About The Project
-
-El objetivo de este proyecto es estimar la integridad ecológica mediante un modelo de red bayesiana.
+El objetivo de este proyecto es estimar un índice de integridad ecológica (IE) mediante un modelo de red bayesiana. La IE es la capacidad del ecosistema para mantener un sistema ecológico integrado, balanceado y adaptable, que tenga el rango completo de elementos y procesos que se esperarían en el área natural de la región.
 
 <p align="right">
 
@@ -22,11 +20,23 @@ El objetivo de este proyecto es estimar la integridad ecológica mediante un mod
 
 <!-- GETTING STARTED -->
 
-## Getting Started
+## Modelo
 
-This is an example of how you may give instructions on setting up your project locally. To get a local copy up and running follow these simple example steps.
+Se desarrolló una red bayesiana con las siguientes capas:
 
-### Fuentes de datos
+-   Detección de signos: Observaciones obtenidas de sensores remotos.
+
+-   Contextual: Representa las condiciones fisicoquímicas dentro de las cuales, las variables de la capa de detección de signos varían.
+
+-   Latente: Define la condición de la integridad ecológica basándose en los valores de la capa de detección de signos y contextual.
+
+-   Intervención humana: Condiciones que podrían afectar la integridad ecológica.
+
+![](images/red_bayesiana.png)
+
+## Datos
+
+### Fuentes
 
 ### Variables
 
@@ -38,7 +48,7 @@ Variables
 
 This is an example of how to list things you need to use the software and how to install them. \* npm `sh   npm install npm@latest -g`
 
-### Installation
+### Implementación
 
 1.  Get a free API Key at <https://example.com>
 
