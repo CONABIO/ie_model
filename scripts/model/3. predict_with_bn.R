@@ -5,32 +5,31 @@ library("raster")
 library("ggplot2")
 library("tidyterra")
 
+df <- read_csv('data/model_input/df_input_model_5.csv')
+prior <- readRDS('output/prior_test.RData')
+
 # prediction
 prediction <- predict(prior,
-                     response="hemerobia",
-                     newdata=df,
-                     type="distribution")
-
-
+                      response="hemerobia",
+                      newdata=df,
+                      type="distribution")
 probabilities <- prediction$pred$hemerobia
 
-ie_expectancy <- list()
-for (i in 1:nrow(probabilities)){
-  print(i)
-  expect <- sum(as.numeric(colnames(probabilities)) * probabilities[i,])
-  print(expect)
-  ie_expectancy[[i]] <- expect
-}
+# raster with standardized expectancy
+expectancy <- probabilities %*%  as.numeric(colnames(probabilities)) 
+expectancy <- (18-expectancy)/(18)
+r_exp <- terra::rast(data.frame(x=df$x,y=df$y,ie=expectancy))
+crs(r_exp) <- crs_text
 
-ie <- unlist(ie_expectancy)
-ie <- (18-ie)/(18)
+# raster with most probable category
+category <- colnames(probabilities)[apply(probabilities,1,which.max)]
+r_cat <- terra::rast(data.frame(x=df$x,y=df$y,ie=category))
+crs(r_cat) <- crs_text
 
-final_raster <- data.frame(x=df$x,y=df$y,ie=ie)
-summary(final_raster)
-final_raster <- rast(final_raster)
+# ggplot() +
+#   geom_spatraster(data = r_cat)
+# freq(r_exp)
 
-ggplot() +
-  geom_spatraster(data = final_raster)
-
-# save raster
-writeRaster(final_raster, 'output/output_test.tif', overwrite=TRUE)
+# save rasters
+writeRaster(r_exp, 'output/ie_exp_test.tif', overwrite=TRUE)
+writeRaster(r_cat, 'output/ie_cat_test.tif', overwrite=TRUE)

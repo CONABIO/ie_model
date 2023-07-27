@@ -6,9 +6,8 @@ library("ggplot2")
 library("tidyterra")
 
 
-# Discretize list of numeric valued variables
-discretizeCols <- function(bnbrik_df,
-                          numeric_var_vec,
+# Discretize list of numeric variables
+discretizeCols <- function(bnbrik_df, numeric_var_vec,
                           breaks_vec=rep(5,length(numeric_var_vec)),
                           method="interval"){
   
@@ -18,41 +17,31 @@ discretizeCols <- function(bnbrik_df,
   return(bnbrik_df)
 }
 
-# remove_var <- c('mad_mex_bosque','mad_mex_matorral')
-remove_var <- c('')
-
-
+# read data
+crs_text <- readRDS("data/model_input/crs_text.RData")
 df <- list.files('data/model_input/dataframe', full.names = TRUE) %>%
-map_dfr(read_csv)
+  map_dfr(read_csv)
 # df <- read_csv('data/model_input/df_input_model_5.csv')
 
 # Remove unwanted variables
+# remove_var <- c('mad_mex_bosque','mad_mex_matorral')
+remove_var <- c('')
 df <- df[,!(names(df) %in% remove_var)]
 
-# User must know which variables are factors and coerce them to factor.
+# Transform to factors
 df <- df  %>% 
   mutate(across(all_of(c("hemerobia","holdridge")), as.factor))
-
-# User must know which variables are numeric and discretize them.
-names_df <- names(df)
-df <- discretizeCols(df,setdiff(names_df, c("x","y",
+df <- discretizeCols(df,setdiff(names(df), c("x","y",
                                             "hemerobia","holdridge")))
-summary(df)
 
-# Load adjacency matrix from csv.
+# Load adjacency matrix from csv and create a graph
 ie_adj <- read.csv("data/model_input/networks/ienet.csv", header = TRUE, 
                    row.names = 1, stringsAsFactors = FALSE)
 ie_adj[is.na(ie_adj)] <- 0
-
-# Remove unwanted variables
 ie_adj <- ie_adj[!(row.names(ie_adj) %in% remove_var),!(names(ie_adj) %in% remove_var)]
-
-# Create a graph based on this adjacency matrix.
 ie_graph <- empty.graph(rownames(ie_adj))
 amat(ie_graph) <- as.matrix(ie_adj)
-
-# Visualize graph
-plot(ie_graph)
+# plot(ie_graph)
 
 # Fit bayesian network.
 fitted <- bn.fit(ie_graph, data.frame(df[,3:ncol(df)]), method = "bayes")
@@ -66,30 +55,28 @@ prediction <- predict(prior,
                       response="hemerobia",
                       newdata=df,
                       type="distribution")
-
-
 probabilities <- prediction$pred$hemerobia
 
-ie_expectancy <- list()
-for (i in 1:nrow(probabilities)){
-  print(i)
-  expect <- sum(as.numeric(colnames(probabilities)) * probabilities[i,])
-  print(expect)
-  ie_expectancy[[i]] <- expect
-}
+# raster with standardized expectancy
+expectancy <- probabilities %*%  as.numeric(colnames(probabilities)) 
+expectancy <- (18-expectancy)/(18)
+r_exp <- terra::rast(data.frame(x=df$x,y=df$y,ie=expectancy))
+crs(r_exp) <- crs_text
 
-ie <- unlist(ie_expectancy)
-ie <- (18-ie)/(18)
-
-final_raster <- data.frame(x=df$x,y=df$y,ie=ie)
-summary(final_raster)
-final_raster <- rast(final_raster)
+# raster with most probable category
+category <- colnames(probabilities)[apply(probabilities,1,which.max)]
+r_cat <- terra::rast(data.frame(x=df$x,y=df$y,ie=category))
+crs(r_cat) <- crs_text
 
 ggplot() +
-  geom_spatraster(data = final_raster)
+  geom_spatraster(data = r_cat)
+freq(r_cat)
+table(as.factor(as.numeric(category)),df$hemerobia)
+sqrt(mean((as.numeric(df$hemerobia) - expectancy)^2))
 
-# save raster
-writeRaster(final_raster, 'output/output_ie.tif', overwrite=TRUE)
+# save rasters
+writeRaster(r_exp, 'output/ie_exp.tif', overwrite=TRUE)
+writeRaster(r_cat, 'output/ie_cat.tif', overwrite=TRUE)
 
-# Save model
-saveRDS(fitted, file="output/bnlearn_model.RData")
+# save model
+saveRDS(fitted, file="output/prior_test.RData")
