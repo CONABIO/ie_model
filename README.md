@@ -26,7 +26,7 @@ Se desarrolló una red bayesiana con las siguientes capas:
 
 -   Intervención humana: Condiciones provocadas por el ser humano, que podrían afectar la integridad ecológica.
 
-![](images/red_resumida.png)
+![](images/red_resumida_espa%C3%B1ol.png)
 
 ## Datos
 
@@ -62,10 +62,10 @@ La red es un modelo de clasificación (ya que la hemerobia es una variable categ
 
 Se puede estimar el índice de IE para todo año en el que se tengan datos, con la red entrenada para 2017.
 
-## Workflow
+## Flujo de trabajo
 
 1.  Proyectar cada raster a la misma medida (extent), sistema de coordenadas (epsg) y resolución, mediante los scripts de la carpeta `scripts/source_extraction`.
-2.  Crear una matriz de adyacencia. El script `1. initialize_adj_matrix.R`, recibe el directorio de la carpeta en donde se encuetran los rasters y crea una matriz cuyos nombres de cada renglón y columna corresponden al nombre de cada uno. Una vez creada, ésta puede ser manipulada en otro software, como Excel. Deber ser llenada con 1's donde existe un arco entre las variables. La dirección del arco es renglón ---\> columna.
+2.  Crear una matriz de adyacencia. El script `1. initialize_adj_matrix.R`, recibe el directorio de la carpeta en donde se encuetran los rasters y crea una matriz cuyos nombres de cada renglón y columna corresponden al nombre de cada raster. Una vez creada, ésta puede ser manipulada en otro software, como Excel, para ser llenada con 1's donde existe un arco entre las variables. La dirección del arco es renglón ---\> columna.
 3.  Para entrenar el modelo se tiene que transformar los rasters a un dataframe mediante el script `2. create_dataframe` , el cual recibe el directorio de la carpeta en donde se encuetran los rasters y arroja un dataframe con cada columna con los valores de cada raster.
-4.  El `script 3. fit_model` recibe el dataframe y la matriz de adyacencia para entrenar la red bayesiana, guardando la red ya entrenada y el raster con el índice de IE.
+4.  El `script 3. fit_model` recibe el dataframe y la matriz de adyacencia para entrenar la red bayesiana, guardando la red ya entrenada y el raster con el índice de IE estimado.
 5.  Con el script `4. predict_with_bn` se puede predecir el índice de IE con la red entrenada en el paso anterior y con nuevos datos.
