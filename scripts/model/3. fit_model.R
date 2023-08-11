@@ -1,10 +1,6 @@
 library("tidyverse")
 library("bnlearn")
 library("gRain")
-library("terra")
-library("ggplot2")
-library("tidyterra")
-
 
 # Discretize list of numeric variables wder
 discretizeCols <- function(bnbrik_df, numeric_var_vec,
@@ -18,7 +14,6 @@ discretizeCols <- function(bnbrik_df, numeric_var_vec,
 }
 
 # read data
-crs_text <- readRDS("data/model_input/crs_text.RData")
 ie_adj <- read.csv("data/model_input/networks/ienet.csv", header = TRUE, 
                    row.names = 1, stringsAsFactors = FALSE)
 df <- list.files('data/model_input/dataframe', full.names = TRUE) %>%
@@ -35,6 +30,7 @@ df <- df  %>%
   mutate(across(all_of(c("hemerobia","holdridge")), as.factor))
 df <- discretizeCols(df,setdiff(names(df), c("x","y",
                                             "hemerobia","holdridge")))
+write.csv(df,'data/prediction_input/df_input.csv', row.names = FALSE)
 
 # Create a graph
 ie_adj[is.na(ie_adj)] <- 0
@@ -51,5 +47,5 @@ fitted <- bn.fit(ie_graph, data.frame(df[,3:ncol(df)]), method = "bayes")
 prior <- compile(as.grain(fitted))
 
 # save model
-saveRDS(fitted, file="output/fitted.RData")
-saveRDS(prior, file="output/prior.RData")
+saveRDS(fitted, file="data/prediction_input/fitted.RData")
+saveRDS(prior, file="data/prediction_input/prior.RData")

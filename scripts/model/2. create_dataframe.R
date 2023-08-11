@@ -51,7 +51,7 @@ for (r in 1:length(m_extent)) {
 
 # save crs
 crs_text <- crs(raster_list[[1]])
-saveRDS(crs_text, "data/model_input/crs_text.RData")  
+saveRDS(crs_text, "data/prediction_input/crs.RData")  
 
 # ggplot() +
 #   geom_spatraster(data = raster_list[[16]])
