@@ -23,7 +23,7 @@ predict_ie_bn <- function(
   # split data
   size <- trunc(total_rows/no_of_partitions)
   n_ini <- (i_cluster-1)*size + 1
-  cat("Leyendo datos del cluster ", i_cluster, "\n")
+  cat(format(Sys.time(), "%Y/%m/%e %H:%M:%S")," - Leyendo datos del cluster ", i_cluster, "\n")
   if ( i_cluster == no_of_partitions ) {
     df <- read.csv(input_csv,
                    skip = n_ini,
@@ -40,6 +40,7 @@ predict_ie_bn <- function(
   gc(reset = TRUE)
   
   # prediction
+  cat(format(Sys.time(), "%Y/%m/%e %H:%M:%S")," - Empieza prediccion del cluster ", i_cluster, "\n")
   prediction <- predict(prior,
                         response="hemerobia",
                         newdata=df,
@@ -57,7 +58,7 @@ predict_ie_bn <- function(
   df_cat <- data.frame(x=df$x,y=df$y,ie=category)
 
   # save rasters
-  cat("Escribiendo resultados del cluster ", i_cluster, "\n")
+  cat(format(Sys.time(), "%Y/%m/%e %H:%M:%S"), " - Escribiendo resultados del cluster ", i_cluster, "\n")
   write.csv(df_exp,file.path(out_path,'df_expectancy',paste0('df_exp_',i_cluster,'.csv')),
             row.names = FALSE)
   write.csv(df_cat,file.path(out_path,'df_categorical',paste0('df_cat_',i_cluster,'.csv')),
@@ -69,11 +70,11 @@ args <- commandArgs(TRUE)
 
 input_csv <- 'df_input.csv'
 total_rows <- as.numeric(system(paste("cat", input_csv, "| wc -l"), intern = TRUE)) - 1
-n_parts <- 10000000
+n_parts <- 40000
 prior <- readRDS('prior.RData')
 i_cluster <- as.numeric(args[1])
 out_path <- 'output'
-cat("Procesando particion ", i_cluster, " de ", n_parts, "\n")
+cat(format(Sys.time(), "%Y/%m/%e %H:%M:%S"), " - Procesando particion ", i_cluster, " de ", n_parts, "\n")
 
 predict_ie_bn(prior, 
               input_csv, 
