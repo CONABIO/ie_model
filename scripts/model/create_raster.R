@@ -1,14 +1,14 @@
 library("terra")
 library("ggplot2")
 library("tidyterra")
+library("tidyverse")
 
-
-df_exp <- list.files('output/df_expectancy_test', full.names = TRUE) %>%
+df_exp <- list.files('output/df_expectancy', full.names = TRUE) %>%
   map_dfr(read_csv)
-df_cat <- list.files('output/df_categorical_test', full.names = TRUE) %>%
+df_cat <- list.files('output/df_categorical', full.names = TRUE) %>%
   map_dfr(read_csv)
 crs_text <- readRDS("data/prediction_input/crs.RData")
-df_hem <- read.csv('data/prediction_input/df_input_test.csv')
+# df_hem <- read.csv('data/prediction_input/df_input_test.csv')
 
 # raster with standardized expectancy
 r_exp <- terra::rast(df_exp)
@@ -22,9 +22,9 @@ ggplot() +
   geom_spatraster(data = r_exp)
 ggplot() +
   geom_spatraster(data = r_cat)
-table(df_cat$ie,df_hem$hemerobia)
-sqrt(mean((as.numeric(df_hem$hemerobia) - df_cat$ie)^2))
+# table(df_cat$ie,df_hem$hemerobia)
+# sqrt(mean((as.numeric(df_hem$hemerobia) - df_cat$ie)^2))
 
 # save rasters
-writeRaster(r_exp, 'output/ie_exp_test.tif', overwrite=TRUE)
-writeRaster(r_cat, 'output/ie_cat_test.tif', overwrite=TRUE)
+# writeRaster(r_exp, 'output/ie_exp.tif', overwrite=TRUE)
+# writeRaster(r_cat, 'output/ie_cat.tif', overwrite=TRUE)

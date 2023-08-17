@@ -70,7 +70,7 @@ args <- commandArgs(TRUE)
 
 input_csv <- 'df_input.csv'
 total_rows <- as.numeric(system(paste("cat", input_csv, "| wc -l"), intern = TRUE)) - 1
-n_parts <- 40000
+n_parts <- 4000
 prior <- readRDS('prior.RData')
 i_cluster <- as.numeric(args[1])
 out_path <- 'output'

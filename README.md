@@ -31,7 +31,7 @@ Se desarrolló una red bayesiana con las siguientes capas:
 ## Datos
 
 | Variable                                           | Capa                | Fuente                                       |
-|----------------------------|-------------------|--------------------------|
+|----------------------------------------------------|---------------------|----------------------------------------------|
 | Hemerobia                                          | Latente             | Uso de suelo y vegetación, INEGI             |
 | Proporción de cultivos y crecimiento herbáceo      | Intervención humana | MAD-Mex                                      |
 | Proporción de asentamientos humanos                | Intervención humana | MAD-Mex                                      |
@@ -57,6 +57,8 @@ Para entrenar la capa latente, se utilizó la hemerobia como proxy de integridad
 ## Implementación
 
 Se utilizó la paquetería `bnlearn`. Se entrenó la red con datos del 2017, a una resolución de 250m para todo el territorio Mexicano.
+
+Se consideró una red bayesiana discreta, por lo que las variables continuas fueron convertidas a categóricas con 5 rangos de la misma longitud, mediante la función `discretize()` de `bnlearn`.
 
 La red es un modelo de clasificación (ya que la hemerobia es una variable categórica). El modelo arroja la probabilidad de que cada pixel pertenezca a una de las 18 categorías de la hemerobia. El índice de IE se estimó mediante la esperanza, la cual fue estandarizada, resultando en un índice del 0 (degradado) al 1 (bien conservado).
 
