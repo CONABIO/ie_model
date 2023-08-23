@@ -19,12 +19,20 @@ r_cat <- terra::rast(df_cat)
 crs(r_cat) <- crs_text
 
 ggplot() +
-  geom_spatraster(data = r_exp)
+  geom_spatraster(data = r_exp) +
+  scale_fill_gradient2(low = "red",
+                         mid = "beige",
+                         high="darkgreen",
+                         midpoint = 0.5)
+ggsave('output/ie_exp.png')
+
 ggplot() +
   geom_spatraster(data = r_cat)
 # table(df_cat$ie,df_hem$hemerobia)
 # sqrt(mean((as.numeric(df_hem$hemerobia) - df_cat$ie)^2))
 
 # save rasters
-# writeRaster(r_exp, 'output/ie_exp.tif', overwrite=TRUE)
-# writeRaster(r_cat, 'output/ie_cat.tif', overwrite=TRUE)
+writeRaster(r_exp, 'output/ie_exp.tif', overwrite=TRUE)
+writeRaster(r_cat, 'output/ie_cat.tif', overwrite=TRUE)
+write.csv(df_exp, 'output/df_exp.csv', row.names = FALSE)
+write.csv(df_cat, 'output/df_cat.csv', row.names = FALSE)
