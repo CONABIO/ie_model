@@ -1,0 +1,18 @@
+library(supercells)
+library(terra)
+library(sf)
+
+
+r_vh <- terra::rast('data/model_input/rasters/vh.tif')
+r_vv <- terra::rast('data/model_input/rasters/vv.tif')
+r_modis_mean <- terra::rast('data/model_input/rasters/modis_mean.tif')
+r_modis_sd <- terra::rast('data/model_input/rasters/modis_sd.tif')
+r_rast <- c(r_vh, r_vv, r_modis_mean, r_modis_sd)
+  
+
+r_rast_slic <- supercells(r_rast, k = 6000000, compactness = 1)
+plot(r_rast_slic)
+plot(st_geometry(r_rast_slic), add = TRUE, lwd = 0.2)
+
+sf <- st_geometry(r_rast_slic)
+st_write(sf, "data/model_input/slic/slic.shp", append=FALSE)

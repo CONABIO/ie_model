@@ -1,13 +1,20 @@
-library(terra)
-library(ggplot2)
-library(tidyterra)
-
-r_base <- terra::rast('data/sources/hemerobia/raw/2017/hemerobia.tif')
+library('terra')
+library('ggplot2')
+library('tidyterra')
 
 # create rasters from mad_mex
-r_madmex <- terra::rast('data/sources/mad_mex/raw/2018/mad_mex.tif')
-freq(r_madmex)
+
+input_file <- 'data/sources/mad_mex/raw/2017/madmex_landsat_2017_31.tif'
+output_folder <- 'data/sources/mad_mex/processed/2017'
+mask_file <- 'data/sources/mex_mask/Mask_IE2018.tif'
+
+r_mask <- terra::rast(mask_file)
+r_madmex <- terra::rast(input_file)
+# freq(r_madmex)
+
 # aggregate categories
+# 29 = asentamientos, 30 = suelo_desnudo
+# 32 = cultivos_pastizales, 33 = matorral, 34 = selva, 35 = bosque
 r_madmex <- subst(r_madmex, 
                   from=c(27,28,
                          4,5,13:20,
@@ -18,22 +25,19 @@ r_madmex <- subst(r_madmex,
                        rep(34,6),
                        rep(35,4))
 )
-freq(r_madmex)
+# freq(r_madmex)
+
 # estimate percentage of each level 
-# 29 = asentamientos, 30 = suelo_desnudo
-# 32 = cultivos_pastizales, 33 = matorral, 34 = selva, 35 = bosque
 madmex_val <- c(29,30,32,33,34,35)
 madmex_name <- c('asentamientos','suelo_desnudo','cultivos_pastizales',
                  'matorral','selva','bosque')
-for (i in 2:length(madmex_val)) {
+for (i in 1:length(madmex_val)) {
   print(i)
   mad_mex_cat_value <- madmex_val[[i]]
-  f_pct_cat <- function(v){sum(v==mad_mex_cat_value, na.rm = TRUE)/length(v)}
-  r_madmex_v <- aggregate(r_madmex, 8, f_pct_cat)
-  r_madmex_v <- project(r_madmex_v, r_base)
-  writeRaster(r_madmex_v, paste0('data/sources/mad_mex/processed/2018/mad_mex_',
+  r_madmex_v <- ifel(r_madmex == mad_mex_cat_value, 1, 0)
+  r_madmex_v <- project(r_madmex_v, r_mask, method='average')
+  r_madmex_v <- mask(r_madmex_v, r_mask)
+  writeRaster(r_madmex_v, paste0(output_folder,'/mad_mex_',
                                  madmex_name[[i]],'.tif'), 
               overwrite=TRUE)
 }
-ggplot() +
-  geom_spatraster(data = r_madmex_v)

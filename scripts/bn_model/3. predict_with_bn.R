@@ -1,5 +1,5 @@
 # load packages
-library("gRain")
+library('gRain')
 
 #' Function to predict ie
 #' @param prior RData trained Bayesian network
@@ -15,7 +15,7 @@ predict_ie_bn <- function(
     no_of_partitions=200, 
     i_cluster, 
     out_path
-    ) {
+) {
   if (i_cluster <= 0 || i_cluster > no_of_partitions) {
     stop("Cluster number out of range")
   }
@@ -45,18 +45,18 @@ predict_ie_bn <- function(
                         response="hemerobia",
                         newdata=df,
                         type="distribution")
-
+  
   probabilities <- prediction$pred$hemerobia
-
+  
   # raster with standardized expectancy
   expectancy <- probabilities %*%  as.numeric(colnames(probabilities))
   expectancy <- (18-expectancy)/(18)
   df_exp <- data.frame(x=df$x,y=df$y,ie=expectancy)
-
+  
   # raster with most probable category
   category <- colnames(probabilities)[apply(probabilities,1,which.max)]
   df_cat <- data.frame(x=df$x,y=df$y,ie=category)
-
+  
   # save rasters
   cat(format(Sys.time(), "%Y/%m/%e %H:%M:%S"), " - Escribiendo resultados del cluster ", i_cluster, "\n")
   write.csv(df_exp,file.path(out_path,'df_expectancy',paste0('df_exp_',i_cluster,'.csv')),
@@ -65,20 +65,20 @@ predict_ie_bn <- function(
             row.names = FALSE)
 }
 
-args <- commandArgs(TRUE)
 
-
-input_csv <- 'df_input.csv'
-total_rows <- as.numeric(system(paste("cat", input_csv, "| wc -l"), intern = TRUE)) - 1
-n_parts <- 4000
-prior <- readRDS('prior.RData')
-i_cluster <- as.numeric(args[1])
+input_csv <- 'data/model_input/discretized_df/df_input.csv'
 out_path <- 'output'
-cat(format(Sys.time(), "%Y/%m/%e %H:%M:%S"), " - Procesando particion ", i_cluster, " de ", n_parts, "\n")
+prior_file <- 'data/model_input/prior/prior.RData'
+n_parts <- 10000
 
-predict_ie_bn(prior, 
-              input_csv, 
-              total_rows, 
-              n_parts, 
-              i_cluster, 
-              out_path)
+total_rows <- as.numeric(system(paste("cat", input_csv, "| wc -l"), intern = TRUE)) - 1
+prior <- readRDS(prior_file)
+
+for (i in 1:n_parts) {
+  predict_ie_bn(prior, 
+                input_csv, 
+                total_rows, 
+                n_parts, 
+                i, 
+                out_path)
+}
