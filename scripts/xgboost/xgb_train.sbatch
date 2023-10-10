@@ -5,6 +5,7 @@
 #SBATCH -e output.err
 #SBATCH --export ALL
 #SBATCH -w nodo[5,7],keri
+#SBATCH --mem 128G
 
 train_file=xgb_train.R
 
