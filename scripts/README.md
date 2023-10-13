@@ -10,7 +10,7 @@ Teniendo un proxy de la variable que se quiere estimar y siendo éste una variab
 
 ![](images/supervised_learning.png){width="400"}
 
-Hasta el momento, se han probado 2 modelos: red bayesiana y XGBoost.
+Hasta el momento, se han probado 2 modelos: Red bayesiana y XGBoost.
 
 ## Red bayesiana
 
@@ -26,7 +26,7 @@ Es un modelo probabilístico gráfico, donde cada nodo corresponde a una variabl
 
 ![](images/red_resumida_espan%CC%83ol.png)
 
-Al tener una variable categórica como output, el modelo es de tipo clasificación, obteniendo la probabilidad de que cada pixel pertenezca a cada clase. Para asignar a qué clase pertenece cada pixel, por lo general, se toma la clase con mayor probabilidad.
+Al ser un modelo de clasificación, se obtiene la probabilidad de que cada pixel pertenezca a cada clase de la hemerobia. Para asignarle una clase a cada pixel, se toma la clase con mayor probabilidad.
 
 |       |         |         |     |          |       |
 |-------|---------|---------|-----|----------|-------|
@@ -35,19 +35,19 @@ Al tener una variable categórica como output, el modelo es de tipo clasificaci�
 | ...   |         |         |     |          |       |
 | n     | 0.01    | 0.6     |     | 0.2      | 1     |
 
-Para convertir el resultado del modelo a un índice de 0 al 1, se estimó el promedio ponderado para cada pixel:
-
-$\sum_{i}c_ip_i$
-
-Con lo que se obtiene un número continuo del 0 al 18, posteriormente, se estandariza para obtener un número del 0 al 1, donde 1 es el estado intacto y 0 el de mayor degradación.
+Para estimar el IIE, se calculó el promedio ponderado para cada pixel y se estandarizó este valor para obtener un número del 0 al 1, donde 1 es el estado intacto y 0 el de mayor degradación.
 
 $\frac{18-\sum_{i}c_ip_i}{18}$
+
+## XGBoost
+
+La red bayesiana es un modelo con una estructura previamente definida, donde las dependencias entre variables fueron definidas de manera conjunta por expertos y por un algoritmo que aprende la estructura a partir de los datos. La precisión podría aumentar con un modelo que no tenga una estructura restringida, como lo es XGBoost.
 
 |                                         |           |       |       |
 |-----------------------------------------|-----------|-------|-------|
 |                                         | Precisión | Train | Test  |
 | Original (red bayesiana con InFyS)      | 20.2%     |       |       |
 | Red bayesiana                           | 48.0%     |       |       |
-| XGBoost                                 | 75.1%     | 77.2% | 70.2% |
+| XGBoost sin distancia al borde          | 75.1%     | 77.2% | 70.2% |
 | XGBoost con slic con distancia al borde | 70.8%     | 73.8% | 63.7% |
-| XGBoost con slic con distancia al borde |           |       |       |
+| XGBoost con slic sin distancia al borde | 70.5%     | 73.9% | 62.5% |
