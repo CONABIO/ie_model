@@ -9,7 +9,7 @@ Para modelar el IIE se utilizó la hemerobia como proxy, ésta representa el gra
 Teniendo un proxy de la variable que se quiere estimar y siendo ésta una variable categórica, se puede ajustar un modelo supervisado de tipo clasificación. Hasta el momento, se han probado 2 modelos: Red bayesiana y XGBoost, entrenados con los siguientes datos:
 
 | Datos                                         | Fuente                                       |
-|------------------------------------|-----------------------------------|
+|-----------------------------------------------|----------------------------------------------|
 | Hemerobia                                     | Uso de suelo y vegetación, INEGI             |
 | Uso de suelo                                  | MAD-Mex/MODIS land cover                     |
 | Zona de vida de Holdridge                     | Portal de Geoinformación, CONABIO            |
@@ -43,7 +43,7 @@ Al ser un modelo de clasificación, se obtiene la probabilidad de que cada pixel
 
 Para estimar el IIE, se calculó el promedio ponderado para cada pixel y se estandarizó este valor para obtener un número del 0 al 1, donde 1 es el estado intacto y 0 el de mayor degradación. Este método asume que existe el mismo espacio entre categorías de la hemerobia.
 
-# $\frac{18-\sum_{k=0}^{18}kp_k}{18}$
+$\frac{18-\sum_{k=0}^{18}kp_k}{18}$
 
 La red bayesiana es un modelo con una estructura previamente definida, donde las dependencias entre variables fueron determinadas de manera conjunta por expertos y por un algoritmo que aprende la estructura a partir de los datos. La precisión de la predicción podría aumentar con un modelo que no tenga una estructura restringida, como lo es XGBoost.
 
