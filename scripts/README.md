@@ -9,7 +9,7 @@ Para modelar el IIE se utilizó la hemerobia como proxy, ésta representa el gra
 Teniendo un proxy de la variable que se quiere estimar y siendo ésta una variable categórica, se puede ajustar un modelo supervisado de tipo clasificación. Hasta el momento, se han probado 2 modelos: Red bayesiana y XGBoost, entrenados con los siguientes datos:
 
 | Datos                                         | Fuente                                       |
-|--------------------------------------|----------------------------------|
+|-----------------------------------------------|----------------------------------------------|
 | Hemerobia                                     | Uso de suelo y vegetación, INEGI             |
 | Uso de suelo                                  | MAD-Mex/MODIS land cover                     |
 | Zona de vida de Holdridge                     | Portal de Geoinformación, CONABIO            |
