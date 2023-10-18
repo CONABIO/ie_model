@@ -9,7 +9,7 @@ Para modelar el IIE se utilizó la hemerobia como proxy, ésta representa el gra
 Teniendo un proxy de la variable que se quiere estimar y siendo ésta una variable categórica, se puede ajustar un modelo supervisado de tipo clasificación. Hasta el momento, se han probado 2 modelos: Red bayesiana y XGBoost, entrenados con los siguientes datos:
 
 | Datos                                         | Fuente                                       |
-|-----------------------------------------------|----------------------------------------------|
+|------------------------------------|-----------------------------------|
 | Hemerobia                                     | Uso de suelo y vegetación, INEGI             |
 | Uso de suelo                                  | MAD-Mex/MODIS land cover                     |
 | Zona de vida de Holdridge                     | Portal de Geoinformación, CONABIO            |
@@ -30,7 +30,7 @@ Es un modelo probabilístico gráfico, donde cada nodo corresponde a una variabl
 
 -   Intervención humana: Condiciones provocadas por el ser humano, que podrían afectar la integridad ecológica.
 
-![](images/red_resumida_espan%CC%83ol.png)
+![](images/red_resumida_espanol.png)
 
 Al ser un modelo de clasificación, se obtiene la probabilidad de que cada pixel pertenezca a cada clase de la hemerobia y se asigna la que tiene mayor probabilidad.
 

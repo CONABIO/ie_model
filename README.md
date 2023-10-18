@@ -26,7 +26,7 @@ Se desarrolló una red bayesiana con las siguientes capas:
 
 -   Intervención humana: Condiciones provocadas por el ser humano, que podrían afectar la integridad ecológica.
 
-![](images/red_resumida_espa%C3%B1ol.png)
+    ![](images/red_resumida_espanol.png)
 
 ## Datos
 
