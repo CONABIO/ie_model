@@ -149,7 +149,7 @@ plt_ie_cat <- ggplot() +
                        midpoint = 9) +
   ggtitle('2018 IE cat')
 plt_xgb <- ggplot() +
-  geom_spatraster(data =  r_xgboost) +
+  geom_spatraster(data =  crop(r_xgb,coord)) +
   scale_fill_gradient2(low = "darkgreen",
                        mid = "beige",
                        high="red",
@@ -157,3 +157,38 @@ plt_xgb <- ggplot() +
   ggtitle('2017 IE XGB')
 plot_grid(plt_hem, plt_ie_cat, plt_xgb,
           labels = "AUTO")
+
+
+
+
+plt_xgb <- ggplot() +
+  geom_spatraster(data =  crop(r_xgb,coord)) +
+  scale_fill_gradient2(low = "darkgreen",
+                       mid = "beige",
+                       high="red",
+                       midpoint = 9) + 
+  theme(legend.position = "none") +
+  ggtitle('XGB predicción')
+
+plt_slic <- ggplot(sf) +
+  tidyterra::geom_spatvector(aes(fill = hem), 
+                             color = "white") +
+  scale_fill_gradient2(low = "darkgreen",
+                       mid = "beige",
+                       high="red",
+                       midpoint = 9) + 
+  theme(legend.position = "none") +
+  ggtitle('SLIC')
+
+plt_hem <- ggplot() +
+  tidyterra::geom_spatraster(data=r_cat[[1]]) +
+  scale_fill_gradient2(low = "darkgreen",
+                       mid = "beige",
+                       high="red",
+                       midpoint = 9) + 
+  theme(legend.position = "none") +
+  ggtitle('Hemerobia')
+
+plot_grid(plt_hem, plt_xgb, plt_slic,
+            labels = "AUTO", ncol=3)
+ggsave('output/slic_comparison.jpg')

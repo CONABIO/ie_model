@@ -6,11 +6,17 @@ Para modelar el IIE se utilizó la hemerobia como proxy, ésta representa el gra
 
 ![](images/hemerobia.png){width="1200"}
 
-Teniendo un proxy de la variable que se quiere estimar y siendo éste una variable categórica, se puede ajustar un modelo supervisado de tipo clasificación.
+Teniendo un proxy de la variable que se quiere estimar y siendo ésta una variable categórica, se puede ajustar un modelo supervisado de tipo clasificación. Hasta el momento, se han probado 2 modelos: Red bayesiana y XGBoost, entrenados con los siguientes datos:
 
-![](images/supervised_learning.png){width="400"}
-
-Hasta el momento, se han probado 2 modelos: Red bayesiana y XGBoost.
+| Datos                                         | Fuente                                       |
+|--------------------------------------|----------------------------------|
+| Hemerobia                                     | Uso de suelo y vegetación, INEGI             |
+| Uso de suelo                                  | MAD-Mex/MODIS land cover                     |
+| Zona de vida de Holdridge                     | Portal de Geoinformación, CONABIO            |
+| Elevación                                     | Copernicus DEM GLO-30                        |
+| Fotosíntesis                                  | MODIS/Terra Gross Primary Productivity, NASA |
+| Radar (C-band Synthetic Aperture Radar (SAR)) | Sentinel-1 SAR GRD, Copernicus               |
+| Distancia al borde                            |                                              |
 
 ## Red bayesiana
 
@@ -26,7 +32,7 @@ Es un modelo probabilístico gráfico, donde cada nodo corresponde a una variabl
 
 ![](images/red_resumida_espan%CC%83ol.png)
 
-Al ser un modelo de clasificación, se obtiene la probabilidad de que cada pixel pertenezca a cada clase de la hemerobia. Para asignarle una clase a cada pixel, se toma la clase con mayor probabilidad.
+Al ser un modelo de clasificación, se obtiene la probabilidad de que cada pixel pertenezca a cada clase de la hemerobia y se asigna la que tiene mayor probabilidad.
 
 |       |         |         |     |          |       |
 |-------|---------|---------|-----|----------|-------|
@@ -35,19 +41,35 @@ Al ser un modelo de clasificación, se obtiene la probabilidad de que cada pixel
 | ...   |         |         |     |          |       |
 | n     | 0.01    | 0.6     |     | 0.2      | 1     |
 
-Para estimar el IIE, se calculó el promedio ponderado para cada pixel y se estandarizó este valor para obtener un número del 0 al 1, donde 1 es el estado intacto y 0 el de mayor degradación.
+Para estimar el IIE, se calculó el promedio ponderado para cada pixel y se estandarizó este valor para obtener un número del 0 al 1, donde 1 es el estado intacto y 0 el de mayor degradación. Este método asume que existe el mismo espacio entre categorías de la hemerobia.
 
-$\frac{18-\sum_{i}c_ip_i}{18}$
+# $\frac{18-\sum_{k=0}^{18}kp_k}{18}$
+
+La red bayesiana es un modelo con una estructura previamente definida, donde las dependencias entre variables fueron determinadas de manera conjunta por expertos y por un algoritmo que aprende la estructura a partir de los datos. La precisión de la predicción podría aumentar con un modelo que no tenga una estructura restringida, como lo es XGBoost.
 
 ## XGBoost
 
-La red bayesiana es un modelo con una estructura previamente definida, donde las dependencias entre variables fueron definidas de manera conjunta por expertos y por un algoritmo que aprende la estructura a partir de los datos. La precisión podría aumentar con un modelo que no tenga una estructura restringida, como lo es XGBoost.
+Es un modelo que combina modelos débiles, es decir modelos con baja precisión, comunmente árboles de decisión, para que en conjunto se obtenga una predicción mucho más exacta. El entrenamiento es iterativo, agregando en cada paso un nuevo árbol de decisión que predice el error de los árboles anteriores. Al final, se combinan las predicciones de todos los árboles en una predicción total.
 
-|                                         |           |       |       |
-|-----------------------------------------|-----------|-------|-------|
-|                                         | Precisión | Train | Test  |
-| Original (red bayesiana con InFyS)      | 20.2%     |       |       |
-| Red bayesiana                           | 48.0%     |       |       |
-| XGBoost sin distancia al borde          | 75.1%     | 77.2% | 70.2% |
-| XGBoost con slic con distancia al borde | 70.8%     | 73.8% | 63.7% |
-| XGBoost con slic sin distancia al borde | 70.5%     | 73.9% | 62.5% |
+![](images/xgboost_diagram.png)
+
+Con este modelo de clasificación, al igual que con la red bayesiana, se obtiene la probabilidad de que cada pixel pertenezca a cada clase de la hemerobia, asignando la de mayor probabilidad.
+
+El mapa resultante muestra un efecto "sal y pimienta", por lo que se agruparon los pixeles en "superpixeles" con el algoritmo SLIC.
+
+![](images/slic_comparison-03.jpg)
+
+## Comparación de los modelos
+
+![](images/model_comparison.jpg)
+
+En la siguiente tabla se muestra la precisión (proporción de pixeles con la clase de hemerobia correcta) de cada modelo probado.
+
+|                                     |       |          |         |
+|-------------------------------------|-------|----------|---------|
+|                                     | Total | Training | Testing |
+| Red bayesiana con InFyS             | 20.2% |          |         |
+| Red bayesiana                       | 48.0% |          |         |
+| XGBoost                             | 75.1% | 77.2%    | 70.2%   |
+| XGBoost-SLIC                        | 70.5% | 73.9%    | 62.5%   |
+| XGBoost-SLIC con distancia al borde | 70.8% | 73.8%    | 63.7%   |
