@@ -4,7 +4,7 @@ El objetivo es estimar un índice de integridad ecológica (IIE) en México. La 
 
 Para modelar el IIE se utilizó la hemerobia como proxy, ésta representa el grado de transformación que mostró la vegetación primaria respecto a la cobertura terrestre actual, siendo una variable categórica ordinal, donde 0 es el estado intacto y 18 el de mayor degradación.
 
-![](images/hemerobia.png){width="1200"}
+![](images/hemerobia.png)
 
 Teniendo un proxy de la variable que se quiere estimar y siendo ésta una variable categórica, se puede ajustar un modelo supervisado de tipo clasificación. Hasta el momento, se han probado 2 modelos: Red bayesiana y XGBoost, entrenados con los siguientes datos:
 
@@ -57,7 +57,7 @@ Con este modelo de clasificación, al igual que con la red bayesiana, se obtiene
 
 El mapa resultante muestra un efecto "sal y pimienta", por lo que se agruparon los pixeles en "superpixeles" con el algoritmo SLIC.
 
-![](images/slic_comparison-03.jpg)
+![](images/slic_comparison.jpg)
 
 ## Comparación de los modelos
 
