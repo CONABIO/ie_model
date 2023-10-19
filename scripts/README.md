@@ -2,7 +2,7 @@
 
 El objetivo es estimar un índice de integridad ecológica (IIE) en México. La IE es la capacidad del ecosistema para mantener un sistema ecológico integrado, balanceado y adaptable, que tenga el rango completo de elementos y procesos que se esperarían en el área natural de la región.
 
-Para modelar el IIE se utilizó la hemerobia como proxy, ésta representa el grado de transformación que mostró la vegetación primaria respecto a la cobertura terrestre actual, siendo una variable categórica ordinal, donde 0 es el estado intacto y 18 el de mayor degradación.
+Para modelar el IIE se utilizó la hemerobia como _proxy_, ésta representa el grado de transformación que mostró la vegetación primaria respecto a la cobertura terrestre actual, siendo una variable categórica ordinal, donde 0 es el estado intacto y 18 el de mayor degradación.
 
 ![](images/hemerobia.png)
 
@@ -32,20 +32,25 @@ Es un modelo probabilístico gráfico, donde cada nodo corresponde a una variabl
 
 ![](images/red_resumida_espanol.png)
 
-Al ser un modelo de clasificación, se obtiene la probabilidad de que cada pixel pertenezca a cada clase de la hemerobia y se asigna la que tiene mayor probabilidad.
+TODO: Cambiar lo explicación de ser un modelo de clasificación probabilista y tomar el valor con la probabilidad más alta y poner la explicación de como se genera el mapa de Integridad Ecológica que se les entrega. Hacer énfasis en la manera que se calculcula la "estandarización"
 
-|       |         |         |     |          |       |
-|-------|---------|---------|-----|----------|-------|
+Para estimar el IIE, se calculó el promedio ponderado para cada pixel y se estandarizó este valor para obtener un número del 0 al 1, donde 1 es el estado intacto y 0 el de mayor degradación. Este método asume que existe el mismo espacio entre categorías de la hemerobia.
+
+$$
+\frac{18-\sum_{k=0}^{18}kp_k}{18}
+$$
+
+TODO: Comentar un poco sobre los posibles riesgos de hacer este cálculo y porque no creemos sea correcto, o qué hipótesis intervienen para que sea interpretable.
+
+Otra manera de asignar los valores del mapa ... Al ser un modelo de clasificación, se obtiene la probabilidad de que cada pixel pertenezca a cada clase de la hemerobia y se asigna la que tiene mayor probabilidad.
+
 | Pixel | Clase 0 | Clase 1 | ... | Clase 18 | Clase |
+|-------|---------|---------|-----|----------|-------|
 | 1     | 0.2     | 0.1     |     | 0.7      | 18    |
 | ...   |         |         |     |          |       |
 | n     | 0.01    | 0.6     |     | 0.2      | 1     |
 
-Para estimar el IIE, se calculó el promedio ponderado para cada pixel y se estandarizó este valor para obtener un número del 0 al 1, donde 1 es el estado intacto y 0 el de mayor degradación. Este método asume que existe el mismo espacio entre categorías de la hemerobia.
-
-$\frac{18-\sum_{k=0}^{18}kp_k}{18}$
-
-La red bayesiana es un modelo con una estructura previamente definida, donde las dependencias entre variables fueron determinadas de manera conjunta por expertos y por un algoritmo que aprende la estructura a partir de los datos. La precisión de la predicción podría aumentar con un modelo que no tenga una estructura restringida, como lo es XGBoost.
+La red bayesiana es un modelo con una estructura previamente definida (**qué implicaciones, por ejemplo sobbre la independencia de las variables**), donde las dependencias entre variables fueron determinadas de manera conjunta por expertos y por un algoritmo que aprende la estructura a partir de los datos (desconocemos a ciencia cierta como se generó la red para el modelo IIE 2018). La precisión de la predicción podría aumentar con un modelo que no tenga una estructura restringida, como lo es XGBoost.
 
 ## XGBoost
 
@@ -54,6 +59,8 @@ Es un modelo que combina modelos débiles, es decir modelos con baja precisión,
 ![](images/xgboost_diagram.png)
 
 Con este modelo de clasificación, al igual que con la red bayesiana, se obtiene la probabilidad de que cada pixel pertenezca a cada clase de la hemerobia, asignando la de mayor probabilidad.
+
+TODO: Explicar qué posibles causas creemos que hicieron el efecto sal y pimienta o más bien como esperamos poderlo quitar. Por ejemplo comparar el proceso de SLIC con el concepto de hemerobia en el sentido de regiones homogeneas
 
 El mapa resultante muestra un efecto "sal y pimienta", por lo que se agruparon los pixeles en "superpixeles" con el algoritmo SLIC.
 
@@ -73,3 +80,6 @@ En la siguiente tabla se muestra la precisión (proporción de pixeles con la cl
 | XGBoost                             | 75.1% | 77.2%    | 70.2%   |
 | XGBoost-SLIC                        | 70.5% | 73.9%    | 62.5%   |
 | XGBoost-SLIC con distancia al borde | 70.8% | 73.8%    | 63.7%   |
+
+TODO: Explicar como hicimos para comparar los mapas que produce Julián con los nuestros.
+TODO: Explicar que estamos entendiendo a la hemerobia como una "medición" real de la IIE
