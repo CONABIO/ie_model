@@ -51,7 +51,7 @@ params <- list(
   objective="multi:softprob",
   eta=0.3,
   gamma=0,
-  max_depth=15,
+  max_depth=10,
   min_child_weight=1,
   subsample=1,
   colsample_bytree=0.7,

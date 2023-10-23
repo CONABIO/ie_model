@@ -10,10 +10,13 @@ r_ie_2018_cat <- round(-1*(r_ie_2018*18-18),0)
 r_hem <- terra::rast('data/model_input/rasters/hemerobia.tif')
 r_xgb <- terra::rast('output/xgb v1/ie_xgb.tif')
 r_xgb <- project(r_xgb, r_hem)
-r_xgb_slic <- terra::rast('output/ie_xgb_slic.tif')
+r_xgb_slic <- terra::rast('output/xgb slic v1/ie_xgb_slic v1.tif')
 r_bn <- terra::rast('output/bn v1/ie_cat.tif')
 r_bn <- project(r_bn, r_hem)
 r_hold <- terra::rast('data/model_input/rasters/holdridge.tif')
+df_py <- read_csv('output/xgb_pred_python.csv')
+r_py <- terra:: rast(df_py[,c('x','y','pred')])
+crs(r_py) <- crs_text
 
 r_tag_slic <- terra::rast('output/r_tag.tif')
 df_train <- read_csv('output/xgb v1/df_train.csv') %>% select(x,y)
@@ -155,12 +158,19 @@ plt_xgb <- ggplot() +
                        high="red",
                        midpoint = 9) +
   ggtitle('2017 IE XGB')
+plt_py <- ggplot() +
+  geom_spatraster(data =  r_py) +
+  scale_fill_gradient2(low = "darkgreen",
+                       mid = "beige",
+                       high="red",
+                       midpoint = 9) +
+  ggtitle('XGB Py')
 plot_grid(plt_hem, plt_ie_cat, plt_xgb,
           labels = "AUTO")
 
 
 
-
+####
 plt_xgb <- ggplot() +
   geom_spatraster(data =  crop(r_xgb,coord)) +
   scale_fill_gradient2(low = "darkgreen",
@@ -168,7 +178,7 @@ plt_xgb <- ggplot() +
                        high="red",
                        midpoint = 9) + 
   theme(legend.position = "none") +
-  ggtitle('XGB predicción')
+  ggtitle('Predicción con XGB')
 
 plt_slic <- ggplot(sf) +
   tidyterra::geom_spatvector(aes(fill = hem), 
@@ -180,6 +190,15 @@ plt_slic <- ggplot(sf) +
   theme(legend.position = "none") +
   ggtitle('SLIC')
 
+plt_slic <- ggplot(sf) +
+  tidyterra::geom_spatraster(data=crop(r_xgb_slic,coord)) +
+  tidyterra::geom_spatvector(fill=NA, col='white') +
+  scale_fill_gradient2(low = "darkgreen",
+                       mid = "beige",
+                       high="red",
+                       midpoint = 9) + 
+  theme(legend.position = "none") +
+  ggtitle('Predicción con XGB-SLIC')
 plt_hem <- ggplot() +
   tidyterra::geom_spatraster(data=r_cat[[1]]) +
   scale_fill_gradient2(low = "darkgreen",
@@ -191,4 +210,48 @@ plt_hem <- ggplot() +
 
 plot_grid(plt_hem, plt_xgb, plt_slic,
             labels = "AUTO", ncol=3)
-ggsave('output/slic_comparison.jpg')
+ggsave('output/slic_comparison_2.jpg')
+
+####
+plt_slic <- ggplot(sf) +
+  tidyterra::geom_spatraster(data=crop(r_modis_sd,coord)) +
+  tidyterra::geom_spatvector(fill=NA, col='white')
+  theme(legend.position = "none") +
+  ggtitle('Predicción con XGB-SLIC')
+####
+coord <- c(3743523, 3900316, 1000945.4, 1100515)
+plt_hem <- ggplot() +
+  geom_spatraster(data =  crop(r_hem,coord)) +
+  scale_fill_gradient2(low = "darkgreen",
+                       mid = "beige",
+                       high="red",
+                       midpoint = 9) +
+  theme(legend.position = "none") +
+  ggtitle('Hemerobia')
+plt_ie <- ggplot() +
+  geom_spatraster(data =  crop(r_ie_2018,coord)) +
+  scale_fill_gradient2(low = "red",
+                       mid = "beige",
+                       high="darkgreen",
+                       midpoint = 0.5) +
+  theme(legend.position = "none") +
+  ggtitle('IIE (promedio ponderado)')
+plt_xgb <- ggplot() +
+  geom_spatraster(data =  crop(r_xgb,coord)) +
+  scale_fill_gradient2(low = "darkgreen",
+                       mid = "beige",
+                       high="red",
+                       midpoint = 9) +
+  theme(legend.position = "none") +
+  ggtitle('XGB')
+plt_xgb_slic <- ggplot() +
+  geom_spatraster(data =  crop(r_xgb_slic,coord)) +
+  scale_fill_gradient2(low = "darkgreen",
+                       mid = "beige",
+                       high="red",
+                       midpoint = 9) +
+  theme(legend.position = "none") +
+  ggtitle('XGB-SLIC')
+plot_grid(plt_hem, plt_ie, plt_xgb, plt_xgb_slic,
+          labels = "AUTO", ncol=2)
+ggsave('output/model_comparison.jpg')
