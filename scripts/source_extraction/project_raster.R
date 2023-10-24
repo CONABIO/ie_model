@@ -3,9 +3,10 @@ library('ggplot2')
 library('tidyterra')
 
 # project raster to r_mask's extent, epsg and resolution
-input_file <- 'data/sources/patch/distancia_borde_Mx.tif'
-output_file <- 'data/sources/patch/edge_distance.tif'
+input_file <- 'data/sources/land_cover/raw/2017/land_cover_2017.tif'
+output_file <- 'data/sources/land_cover/processed/2017/land_cover.tif'
 mask_file <- 'data/sources/mex_mask/Mask_IE2018.tif'
+projection_method <- 'near'
 projection_method <- 'average'
 
 r_mask <- terra::rast(mask_file)
