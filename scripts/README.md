@@ -1,9 +1,3 @@
----
-output:
-  pdf_document: default
-  word_document: default
----
-
 # Integridad Ecológica
 
 El objetivo es estimar un índice de integridad ecológica (IIE) en México. La IE es la capacidad del ecosistema para mantener un sistema ecológico integrado, balanceado y adaptable, que tenga el rango completo de elementos y procesos que se esperarían en el área natural de la región.
@@ -19,7 +13,7 @@ Para modelar la hemerobia se tomaron en cuenta variables relacionadas a la integ
 El ráster de cada una de las variables fue transformado a una misma resolución de 250m x 250m.
 
 |                                             | Definición                                                                                                                     | Variable                                     | Resolución de origen (m)           | Transformación a resolución de 250m | Fuente                                         |
-|------------|--------------|---------------|---------|----------|-------------|
+|---------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------|------------------------------------|-------------------------------------|------------------------------------------------|
 | Hemerobia                                   | Grado de transformación que mostró la vegetación primaria respecto a la cobertura terrestre actual                             | Hemerobia                                    | 250                                | \-                                  | Uso de suelo y vegetación, INEGI               |
 | Zona de vida de Holdridge                   | Agrupa en 28 zonas basándose en precipitación, biotemperatura y la evapotranspiración                                          | Zona de vida de Holdridge                    | 260                                | Interpolación con Nearest Neighbor  | Portal de Geoinformación, CONABIO              |
 | Elevación (DEM)                             | Altura sobre nivel promedio del mar                                                                                            | Promedio                                     | 30                                 | Promedio                            | DEM GLO-30, Copernicus                         |
