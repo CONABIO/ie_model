@@ -67,7 +67,7 @@ El modelo estima la probabilidad de pertenecer a cada clase para cada uno de los
 | x     | 0.1     | 0.1     |     | 0.7      | 0.2        |
 
 $$
-1-\frac{\sum_{k=0}^{18}kp_k}{18}=1-\frac{0(0.1)+1(0.1)+...+18(0.7)}{18}=0.2
+1-\frac{\sum_{k=0}^{18} kp_k}{18}=1-\frac{0(0.1)+1(0.1)+...+18(0.7)}{18}=0.2
 $$
 
 La transformación anterior se realizó con el fin de obtener un valor continuo a partir de un valor categórico. Este método asume que existe el mismo espacio entre categorías de la hemerobia, por ejemplo pasar del estado 3 al 4, representa la misma degradación que pasar del 14 al 15. De ser esto correcto, sería más adecuado que la conversión se hiciera antes de entrenar el modelo y que éste fuera una regresión, ya que de esta manera el modelo tomaría en cuenta el orden de las categorías, lo que no ocurre con un modelo de clasificación. Otro inconveniente de esta transformación es la pérdida de interpretabilidad, pues no se sabe qué categoría de la hemerobia se predice para cada pixel, esto a su vez representa un problema al analizar la precisión del modelo, pues la predicción no puede ser directamente comparada con la hemerobia.
