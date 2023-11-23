@@ -11,7 +11,7 @@ r_hem <- terra::rast('data/model_input/rasters/hemerobia.tif')
 r_xgb <- terra::rast('output/xgb v1/ie_xgb.tif')
 r_xgb <- project(r_xgb, r_hem)
 r_xgb_slic <- terra::rast('output/xgb slic v1/ie_xgb_slic v1.tif')
-r_bn <- terra::rast('output/bn v1/ie_cat.tif')
+r_bn <- terra::rast('output/bn v2/ie_cat.tif')
 r_bn <- project(r_bn, r_hem)
 r_hold <- terra::rast('data/model_input/rasters/holdridge.tif')
 df_py <- read_csv('output/xgb_pred_python.csv')
@@ -30,14 +30,14 @@ rm(df_train)
 rm(df_test)
 
 df_raster <- terra::as.data.frame(c(r_hem, 
-                                    r_xgb,
-                                    r_xgb_slic,
+                                    # r_xgb,
+                                    # r_xgb_slic,
                                     r_bn),
                                   xy = TRUE, na.rm = TRUE) 
 names(df_raster) <- c('x','y',
                       'hemerobia',
-                      'xgb',
-                      'xgb_slic',
+                      # 'xgb',
+                      # 'xgb_slic',
                       'bn')
 df_raster2 <- terra::as.data.frame(c(r_tag,
                                      r_tag_slic,
@@ -145,7 +145,7 @@ plt_hem <- ggplot() +
                        midpoint = 9) +
   ggtitle('2017 Hem')
 plt_ie_cat <- ggplot() +
-  geom_spatraster(data =  r_ie_cat) +
+  geom_spatraster(data =  r_bn) +
   scale_fill_gradient2(low = "darkgreen",
                        mid = "beige",
                        high="red",

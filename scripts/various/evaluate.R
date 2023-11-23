@@ -4,6 +4,18 @@ library('tidyterra')
 library('tidyverse')
 library('cowplot')
 
+r_ie_2021 <- terra::rast('output/ie_xgb_2021.tif')
+r_ie_2017 <- terra::rast('output/xgb v1/ie_xgb.tif')
+r_diff <- r_ie_2021 - r_ie_2017
+writeRaster(r_diff, 'output/r_diff_21_17.tif',overwrite=TRUE)
+
+r_ie_2021 <- terra::rast('output/ie_xgb_slic_2021.tif')
+r_ie_2017 <- terra::rast('output/xgb slic v3/ie_xgb_slic 2017.tif')
+r_diff <- r_ie_2021 - r_ie_2017
+writeRaster(r_diff, 'output/r_diff_slic_21_17.tif',overwrite=TRUE)
+
+
+
 r_ie_2018 <- terra::rast('data/sources/ie_2018/ie_2018_st_v2.tif')
 r_hem <- terra::rast('data/model_input/rasters/hemerobia.tif')
 r_xgboost <- terra::rast('output/ie_xgboost.tif')
