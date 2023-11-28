@@ -1,22 +1,56 @@
-<a name="ie-model"></a>
-
-<br />
-
-<h3 align="center">
-
 # Integridad Ecológica
 
-</h3>
+El objetivo es estimar un índice de integridad ecológica (IIE) en México. La IE es la capacidad del ecosistema para mantener un sistema ecológico integrado, balanceado y adaptable, que tenga el rango completo de elementos y procesos que se esperarían en el área natural de la región.
 
-<!-- ABOUT THE PROJECT -->
+## Datos
 
-El objetivo de este proyecto es estimar un índice de integridad ecológica (IE) mediante un modelo de red bayesiana. La IE es la capacidad del ecosistema para mantener un sistema ecológico integrado, balanceado y adaptable, que tenga el rango completo de elementos y procesos que se esperarían en el área natural de la región.
+La integridad ecológica no puede ser directamente observada, por lo que para modelar el IIE se utilizó la hemerobia como *proxy*, asumiendo que puede ser considerada como una medición de la integridad. Ésta representa el grado de transformación que mostró la vegetación primaria respecto a la cobertura terrestre actual, siendo una variable categórica ordinal, donde 0 es el estado intacto y 18 el de mayor degradación.
 
-<!-- GETTING STARTED -->
+![](images/hemerobia.png)
 
-## Modelo
+Para modelar la hemerobia se tomaron en cuenta variables relacionadas a la integridad ecológica. Se incluyeron las zonas de vida de Holdridge y la elevación, con el fin de considerar la variabilidad natural de las condiciones bioclimáticas que definen los distintos tipos de ecosistemas. La condición de la vegetación se incluyó en una primera versión del modelo, a través de datos obtenidos del INFyS (Inventario Nacional Forestal y de Suelos), que publicaba observaciones obtenidas de muestreo en campo. Sin embargo, esta fuente de información ha sido descontinuada, por lo que fue sustituida con datos de radar, los cuales han sido previamente utilizados para modelar vegetación, por ejemplo, para predicción de la altura del dosel. La variable de distancia al borde del parche representó la fragmentación. Y el uso de suelo identificó distintos tipos relacionados a cierta integridad ecológica, como cultivos y asentamientos urbanos. La fuente de datos de uso de suelo para la primera versión del modelo, fue MAD-Mex, sin embargo, sólo se tienen datos hasta 2018, por lo que se sustituyó por MODIS Land Cover.
 
-Se desarrolló una red bayesiana con las siguientes capas:
+El ráster de cada una de las variables fue transformado a una misma resolución de 250m x 250m.
+
+|                                             | Definición                                                                                                                     | Variable                                     | Resolución de origen (m)           | Transformación a resolución de 250m | Fuente                                         |
+|-----------|------------|-----------------|----------|-----------|-------------|
+| Hemerobia                                   | Grado de transformación que mostró la vegetación primaria respecto a la cobertura terrestre actual                             | Hemerobia                                    | 250                                | \-                                  | Uso de suelo y vegetación, INEGI               |
+| Zona de vida de Holdridge                   | Agrupa en 28 zonas basándose en precipitación, biotemperatura y la evapotranspiración                                          | Zona de vida de Holdridge                    | 260                                | Interpolación con Nearest Neighbor  | Portal de Geoinformación, CONABIO              |
+| Elevación (DEM)                             | Altura sobre nivel promedio del mar                                                                                            | Promedio                                     | 30                                 | Promedio                            | DEM GLO-30, Copernicus                         |
+|                                             |                                                                                                                                | Mínimo                                       |                                    | Mínimo                              |                                                |
+|                                             |                                                                                                                                | Máximo                                       |                                    | Máximo                              |                                                |
+| Fotosíntesis (Productividad primaria bruta) | Cantidad total de compuestos de carbono producidos por la fotosíntesis                                                         | Promedio anual                               | 500                                | Interpolación con Nearest Neighbor  | Terra Gross Primary Productivity, NASA LP DAAC |
+|                                             |                                                                                                                                | DE anual                                     |                                    |                                     |                                                |
+|                                             |                                                                                                                                | Promedio en estación de lluvias              |                                    |                                     |                                                |
+|                                             |                                                                                                                                | Promedio en estación seca                    |                                    |                                     |                                                |
+| Radar (de apertura sintética en la banda C) | Coeficiente de retrodispersión que depende de la geometría del terreno y sus características electromagnéticas                 | Promedio anual de banda VH y VV              | 40                                 | Promedio                            | Sentinel-1, Copernicus Sentinel data           |
+|                                             |                                                                                                                                | DE anual de banda VH y VV                    |                                    |                                     |                                                |
+|                                             |                                                                                                                                | Entropía del promedio anual de banda VV y VH |                                    |                                     |                                                |
+| Distancia al borde                          | Distancia, en metros, de cada pixel al borde del parche                                                                        | Distancia al borde                           | 250                                | \-                                  |                                                |
+| Uso de suelo                                | Estimación basada en imágenes satelitales del tipo de uso de suelo, que incluye cultivos, asentamientos urbanos, bosques, etc. | Uso de suelo                                 | 500                                | Interpolación con Nearest Neighbor  | MODIS Land Cover Type, NASA LP DAAC            |
+| Uso de suelo (MAD-Mex)                      | Estimación basada en Landsat                                                                                                   | Proporción de cultivos y pastizales          | 30                                 | Proporción de cada categoría        | MAD-Mex, CONABIO                               |
+|                                             |                                                                                                                                | Proporción de asentamientos humanos          |                                    |                                     |                                                |
+|                                             |                                                                                                                                | Proporción de suelo desnudo                  |                                    |                                     |                                                |
+|                                             |                                                                                                                                | Proporción de matorral                       |                                    |                                     |                                                |
+|                                             |                                                                                                                                | Proporción de selva                          |                                    |                                     |                                                |
+|                                             |                                                                                                                                | Proporción de bosque                         |                                    |                                     |                                                |
+| INFyS                                       | Inventario Nacional Forestal y de Suelos                                                                                       | Número de árboles y arbustos                 | Muestreo en malla de 5, 10 y 20 km | Interpolación con XGB               | INFyS                                          |
+|                                             |                                                                                                                                | Presencia de daño por insectos en árboles    |                                    |                                     |                                                |
+|                                             |                                                                                                                                | Presencia de árboles muertos                 |                                    |                                     |                                                |
+|                                             |                                                                                                                                | Diámetro de tronco (promedio y DE)           |                                    |                                     |                                                |
+|                                             |                                                                                                                                | Diámetro de copa (promedio y DE)             |                                    |                                     |                                                |
+|                                             |                                                                                                                                | Altura total de árbol (promedio y DE)        |                                    |                                     |                                                |
+|                                             |                                                                                                                                | Altura de fuste limpio (promedio y DE)       |                                    |                                     |                                                |
+
+DE: Desviación Estándar
+
+## Modelos
+
+Teniendo un proxy de la variable que se quiere predecir y siendo ésta una variable categórica, se puede ajustar un modelo supervisado de tipo clasificación.
+
+### Red bayesiana
+
+Es un modelo probabilístico gráfico, donde cada nodo corresponde a una variable aleatoria y cada arista representa la dependencia condicional entre las variables que conecta. El modelo tiene 4 capas:
 
 -   Detección de signos: Observaciones obtenidas de sensores remotos.
 
@@ -26,48 +60,61 @@ Se desarrolló una red bayesiana con las siguientes capas:
 
 -   Intervención humana: Condiciones provocadas por el ser humano, que podrían afectar la integridad ecológica.
 
-    ![](images/red_resumida_espanol.png)
+![](images/red_resumida_espanol.png){width="641"}
 
-## Datos
+El modelo estima la probabilidad de pertenecer a cada clase de la hemerobia para cada uno de los pixeles. Para estimar el IIE, se calculó el promedio de las clases ponderado por la probabilidad de cada una de ellas, obteniendo un valor continuo del 0 al 18. Para obtener un índice del 0 al 1, se dividió entre 18. Y para que el 0 represente el estado con mayor degradación y el 1 el estado intacto, se restó este valor a la unidad.
 
-| Variable                                           | Capa                | Fuente                                       |
-|----------------------------------------------------|---------------------|----------------------------------------------|
-| Hemerobia                                          | Latente             | Uso de suelo y vegetación, INEGI             |
-| Proporción de cultivos y crecimiento herbáceo      | Intervención humana | MAD-Mex                                      |
-| Proporción de asentamientos humanos                | Intervención humana | MAD-Mex                                      |
-| Proporción de suelo desnudo                        | Intervención humana | MAD-Mex                                      |
-| Zona de vida de Holdridge                          | Contextual          | Portal de Geoinformación, CONABIO            |
-| Elevación promedio (DEM90)                         | Contextual          | Continuo de Elevaciones Mexicano, INEGI      |
-| Mínimo de elevación                                | Contextual          | Continuo de Elevaciones Mexicano, INEGI      |
-| Máximo de elevación                                | Contextual          | Continuo de Elevaciones Mexicano, INEGI      |
-| Fotosíntesis neta promedio                         | Detección de signos | MODIS/Terra Gross Primary Productivity, NASA |
-| Desviación estándar de fotosíntesis neta           | Detección de signos | MODIS/Terra Gross Primary Productivity, NASA |
-| Promedio de fotosístesis neta en estación lluviosa | Detección de signos | MODIS/Terra Gross Primary Productivity, NASA |
-| Promedio de fotosítesis neta en estación seca      | Detección de signos | MODIS/Terra Gross Primary Productivity, NASA |
-| Proporción de crecimiento arbustivo                | Detección de signos | MAD-Mex                                      |
-| Proporsión de crecimiento arbóreo tropical         | Detección de signos | MAD-Mex                                      |
-| Proporción de crecimiento arbóreo                  | Detección de signos | MAD-Mex                                      |
-| VH                                                 | Detección de signos | Sentinel-1 SAR GRD, Copernicus               |
-| VH entropía                                        | Detección de signos | Sentinel-1 SAR GRD, Copernicus               |
+| pixel | Clase 0 | Clase 1 | ... | Clase 18 | Predicción |
+|-------|---------|---------|-----|----------|------------|
+| x     | 0.1     | 0.1     |     | 0.7      | 0.2        |
 
-Para entrenar la capa latente, se utilizó la hemerobia como proxy de integridad ecológica. Ésta estima el grado de transformación que mostró la vegetación primaria, respecto a la cobertura terrestre actual.
+$$
+1-\frac{\sum_{k=0}^{18} kp_k}{18}=1-\frac{0(0.1)+1(0.1)+...+18(0.7)}{18}=0.2
+$$
 
-![](images/hemerobia.png)
+La transformación anterior se realizó con el fin de obtener un valor continuo a partir de un valor categórico. Este método supone que existe el mismo espacio entre categorías de la hemerobia, por ejemplo, pasar del estado 3 al 4, representa la misma degradación que pasar del 14 al 15. De ser esto correcto, sería más adecuado que la conversión se hiciera antes de entrenar el modelo y que éste fuera una regresión, ya que así el modelo tomaría en cuenta el orden de las categorías, lo que no ocurre con un modelo de clasificación. Otro inconveniente de la transformación es la pérdida de interpretabilidad, pues no se sabe qué categoría de la hemerobia se predice para cada pixel, esto a su vez representa un problema al analizar la precisión del modelo, pues la predicción no puede ser directamente comparada con la hemerobia.
 
-## Implementación
+Otra manera de asignar los valores del mapa con el modelo de clasificación, es tomar la clase que tiene mayor probabilidad. De esta forma la precisión del modelo puede ser evaluada, comparando la predicción con la verdadera categoría (hemerobia).
 
-Se utilizó la paquetería `bnlearn`. Se entrenó la red con datos del 2017, a una resolución de 250m para todo el territorio Mexicano.
+| Pixel | Clase 0 | Clase 1 | ... | Clase 18 | Predicción |
+|-------|---------|---------|-----|----------|------------|
+| x     | 0.1     | 0.1     |     | 0.7      | 18         |
 
-Se consideró una red bayesiana discreta, por lo que las variables continuas fueron convertidas a categóricas con 5 rangos de la misma longitud, mediante la función `discretize()` de `bnlearn`.
+La estructura del grafo de la red bayesiana debe ser definida previamente al entrenamiento, se desconocen los detalles de cómo se determinó la estructura con la que se generó el IIE, sólo se sabe que fue generada de manera conjunta por expertos y por un algoritmo que aprende la estructura a partir de los datos. En el grafo cada arista representa la dependencia condicional entre las variables que conecta (padre ---\> hijo), por lo que cada variable es independiente de las variables no hijas dado el valor de sus variables padres, por ejemplo, la variable fotosíntesis es independiente de VH, dado el valor de la hemerobia. Esto podría ser una desventaja, pues el modelo solo aprende de las relaciones que se definen en el grafo, al contrario de otros modelos que pueden aprender cualquier patrón presente en los datos, como XGBoost.
 
-La red es un modelo de clasificación (ya que la hemerobia es una variable categórica). El modelo arroja la probabilidad de que cada pixel pertenezca a una de las 18 categorías de la hemerobia. El índice de IE se estimó mediante la esperanza, la cual fue estandarizada, resultando en un índice del 0 (degradado) al 1 (bien conservado).
+### XGBoost
 
-Se puede estimar el índice de IE para todo año en el que se tengan datos, con la red entrenada para 2017.
+Es un modelo que combina modelos débiles, es decir modelos con baja precisión, comúnmente árboles de decisión, para que en conjunto se obtenga una predicción mucho más exacta. El entrenamiento es iterativo, agregando en cada paso un nuevo árbol de decisión que predice el error de los árboles anteriores. Al final, se combinan las predicciones de los árboles en una predicción total.
 
-## Flujo de trabajo
+![](images/xgboost_diagram.png){width="581"}
 
-1.  Proyectar cada raster a la misma medida (extent), sistema de coordenadas (epsg) y resolución, mediante los scripts de la carpeta `scripts/source_extraction`.
-2.  Crear una matriz de adyacencia. El script `1. initialize_adj_matrix.R`, recibe el directorio de la carpeta en donde se encuetran los rasters y crea una matriz cuyos nombres de cada renglón y columna corresponden al nombre de cada raster. Una vez creada, ésta puede ser manipulada en otro software, como Excel, para ser llenada con 1's donde existe un arco entre las variables. La dirección del arco es renglón ---\> columna.
-3.  Para entrenar el modelo se tiene que transformar los rasters a un dataframe mediante el script `2. create_dataframe` , el cual recibe el directorio de la carpeta en donde se encuetran los rasters y arroja un dataframe con cada columna con los valores de cada raster.
-4.  El `script 3. fit_model` recibe el dataframe y la matriz de adyacencia para entrenar la red bayesiana, guardando la red ya entrenada y el raster con el índice de IE estimado.
-5.  Con el script `4. predict_with_bn` se puede predecir el índice de IE con la red entrenada en el paso anterior y con nuevos datos.
+Para entrenar el modelo se tomaron de manera aleatoria el 70% de los datos, el 30% restante se usó para su validación. Con este modelo de clasificación, al igual que con la red bayesiana, se obtiene la probabilidad de que cada pixel pertenezca a cada clase de la hemerobia, asignando la de mayor probabilidad.
+
+### SLIC
+
+Los mapas generados con modelos de clasificación presentan un efecto *sal y pimienta*, derivado de la naturaleza de estos, pues predicen el valor pixel por pixel. La hemerobia no tiene este efecto, ya que la integridad ecológica no suele cambiar de un cuadrante de 250m x 250m a otro, por el contrario, las regiones con una integridad similar suelen ser más extensas, como los son bosques, cultivos, ciudades.
+
+Para eliminar este efecto, se usó el algoritmo SLIC, que crea agrupaciones de pixeles, llamadas *superpixeles,* con características similares de acuerdo a las variables deseadas. En este caso, se utilizaron las bandas VV y VH del radar Sentinel-1, así como la fotosíntesis anual media y su desviación estándar, ya que estas representan el estado de la vegetación.
+
+![](images/slic_comparison_2.jpg)
+
+## Resultados
+
+En la siguiente tabla se muestra la precisión (proporción de pixeles con la clase de hemerobia correcta) de cada modelo probado. Cabe mencionar, que para la red bayesiana con INFyS como variables predictoras, sólo se contaba con los valores convertidos a IIE (0 a 1), por lo que para poder comparar contra la hemerobia, se estimó la clase de cada pixel revirtiendo la fórmula de IIE, obteniendo el promedio ponderado y asignando la clase resultado de redondear este valor.
+
+$$
+k=\mathrm{redondear}(-18(\mathrm{IIE}-1))
+$$
+
+|                                     | Total | Training | Testing |
+|-------------------------------------|-------|----------|---------|
+| Red bayesiana con INFyS             | 20.2% |          |         |
+| Red bayesiana con radar             | 48.0% |          |         |
+| XGBoost                             | 75.1% | 77.2%    | 70.2%   |
+| XGBoost con distancia al borde      | 75.9% | 77.9%    | 71.3%   |
+| XGBoost-SLIC                        | 70.5% | 73.9%    | 62.5%   |
+| XGBoost-SLIC con distancia al borde | 70.8% | 73.8%    | 63.7%   |
+
+Observando los mapas, las 3 predicciones son parecidas a la hemerobia. El IIE, estimado mediante la red bayesiana con INFyS y calculando el promedio ponderado, da un mapa suavizado, no hace diferencia entre ciertas zonas con integridad similar. El modelo XGBoost sí lo hace, sin embargo, presenta un efecto *sal y pimienta*. Por último, se observa que el modelo que utiliza *superpixeles*, es el más parecido a la hemerobia.
+
+![](images/model_comparison.jpg)

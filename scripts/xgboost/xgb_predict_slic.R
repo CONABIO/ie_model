@@ -26,8 +26,7 @@ df <- df %>%
   drop_na()
 
 df <- df  %>% 
-  mutate(across(all_of(c('hemerobia',
-                         'land_cover',
+  mutate(across(all_of(c('land_cover',
                          'holdridge'
   )), as.factor))
 
@@ -61,8 +60,7 @@ df <- dummy_cols(df, select_columns = c('holdridge',
 xgb.matrix <- xgb.DMatrix(data=as.matrix(df %>% 
                                           select(-c('ID','holdridge',
                                                     'land_cover','hemerobia',
-                                                    'edge_distance'))),
-                         label=as.integer(df$hemerobia)-1)
+                                                    'edge_distance'))))
 
 
 # Predict outcomes with the test data
@@ -77,8 +75,8 @@ xgb.matrix <- xgb.DMatrix(data=as.matrix(df %>%
 # df_train$prediction <- as.numeric(colnames(xgb.pred)[apply(xgb.pred,1,which.max)])
 # df_train$train <- 1
 
-xgb.pred = as.data.frame(predict(xgb.fit,xgb.matrix,reshape=T))
-colnames(xgb.pred) = levels(df$hemerobia)
+xgb.pred <- as.data.frame(predict(xgb.fit,xgb.matrix,reshape=T))
+colnames(xgb.pred) <- c(seq(1,16,by=1),18)
 df$prediction <- as.numeric(colnames(xgb.pred)[apply(xgb.pred,1,which.max)])
 
 
@@ -98,7 +96,7 @@ sf$prediction <- as.numeric(df$prediction)
   
 r_pred <- rasterize(sf, r_mask, field="prediction")
 plot(-r_pred)
-writeRaster(r_pred, paste0(output_folder,'/ie_xgb_slic_2021.tif'), 
+writeRaster(r_pred, paste0(output_folder,'/ie_xgb_slic_2018.tif'), 
             overwrite=TRUE)
 
 # r_tag <- rasterize(sf, r_mask, field="train")
