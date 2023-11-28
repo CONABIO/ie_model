@@ -1,3 +1,6 @@
+# creates Bayesian network based on matrix, trains it with input data 
+# and saves the trained model
+
 library('tidyverse')
 library('bnlearn')
 library('gRain')

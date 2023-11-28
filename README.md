@@ -96,7 +96,7 @@ Los mapas generados con modelos de clasificación presentan un efecto *sal y pim
 
 Para eliminar este efecto, se usó el algoritmo SLIC, que crea agrupaciones de pixeles, llamadas *superpixeles,* con características similares de acuerdo a las variables deseadas. En este caso, se utilizaron las bandas VV y VH del radar Sentinel-1, así como la fotosíntesis anual media y su desviación estándar, ya que estas representan el estado de la vegetación.
 
-![](images/slic_comparison_2.jpg)
+![](images/slic_comparison.jpg)
 
 ## Resultados
 

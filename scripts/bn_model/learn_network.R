@@ -1,15 +1,23 @@
+# learns the structure of the Bayesian network, 
+# trains it with input data 
+# and saves the trained model
+
 library('tidyverse')
 library('bnlearn')
 library('gRain')
 library('igraph')
 
 df <- read.csv('data/model_input/discretized_df/df_input.csv')
+
+# set of arcs to be included in the graph
 whitelist <- read.csv('data/model_input/network/whitelist.csv')
+# set of arcs not to be included in the graph
 blacklist <- read.csv('data/model_input/network/blacklist.csv')
   
 df <- df  %>% 
   mutate_at(vars(-x, -y), as.factor)
 
+# Learn the structure of the network 
 network <-hc(df %>% select(-c('x','y')),
              whitelist = whitelist,
              blacklist = blacklist)

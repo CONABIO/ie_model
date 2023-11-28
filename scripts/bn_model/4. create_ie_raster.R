@@ -1,3 +1,5 @@
+# creates raster based on csv with coordinates and values
+
 library('terra')
 library('ggplot2')
 library('tidyterra')

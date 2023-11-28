@@ -1,4 +1,6 @@
-# load packages
+# predicts ecological integrity based on input data and trained Bayesian network
+# code to run it in a cluster
+
 library('gRain')
 
 #' Function to predict ie

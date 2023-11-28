@@ -1,6 +1,7 @@
+# discretizes numerical data
+
 library('tidyverse')
 
-# Discretize list of numeric variables wder
 discretizeCols <- function(bnbrik_df, numeric_var_vec,
                            breaks_vec=rep(5,length(numeric_var_vec)),
                            method="interval"){
@@ -13,19 +14,15 @@ discretizeCols <- function(bnbrik_df, numeric_var_vec,
 
 input_folder <- 'data/model_input/dataframe'
 output_folder <- 'data/model_input/discretized_df'
-remove_var <- c('')
+categorical_var <- c("hemerobia","holdridge")
 
 # read data
 df <- list.files(input_folder, "csv$", full.names = TRUE) %>%
   map_dfr(read_csv)
 
-# Remove unwanted variables
-df <- df[,!(names(df) %in% remove_var)]
-
 # Transform to factors
 df <- df  %>% 
-  mutate(across(all_of(c("hemerobia","holdridge")), as.factor))
-df <- discretizeCols(df,setdiff(names(df), c("x","y",
-                                             "hemerobia","holdridge")))
+  mutate(across(all_of(categorical_var), as.factor))
+df <- discretizeCols(df,setdiff(names(df), c("x","y",categorical_var)))
 
 write.csv(df,paste0(output_folder,'/df_input.csv'), row.names = FALSE)
