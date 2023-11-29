@@ -1,9 +1,9 @@
+# creates dataframes from rasters by partitioning in nx*ny tiles
+
 library('terra')
 library('ggplot2')
 library('tidyterra')
 library('SpaDES.tools')
-
-# creates dataframe from rasters by partitioning in nx*ny tiles
 
 input_folder <- 'data/model_input/rasters'
 output_folder <- 'data/model_input/dataframe'

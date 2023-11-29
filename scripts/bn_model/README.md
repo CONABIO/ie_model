@@ -12,45 +12,46 @@ Se desarrolló una red bayesiana para estimar la integridad ecológica, que cuan
 
     ![](images/red_resumida_espanol.png)
 
-## Datos
+Se consideraron las siguientes variables
 
-| Variable                                           | Capa                | Fuente                                       |
-|-----------------------------|------------------|--------------------------|
-| Hemerobia                                          | Latente             | Uso de suelo y vegetación, INEGI             |
-| Proporción de cultivos y crecimiento herbáceo      | Intervención humana | MAD-Mex                                      |
-| Proporción de asentamientos humanos                | Intervención humana | MAD-Mex                                      |
-| Proporción de suelo desnudo                        | Intervención humana | MAD-Mex                                      |
-| Zona de vida de Holdridge                          | Contextual          | Portal de Geoinformación, CONABIO            |
-| Elevación promedio (DEM90)                         | Contextual          | Continuo de Elevaciones Mexicano, INEGI      |
-| Mínimo de elevación                                | Contextual          | Continuo de Elevaciones Mexicano, INEGI      |
-| Máximo de elevación                                | Contextual          | Continuo de Elevaciones Mexicano, INEGI      |
-| Fotosíntesis neta promedio                         | Detección de signos | MODIS/Terra Gross Primary Productivity, NASA |
-| Desviación estándar de fotosíntesis neta           | Detección de signos | MODIS/Terra Gross Primary Productivity, NASA |
-| Promedio de fotosístesis neta en estación lluviosa | Detección de signos | MODIS/Terra Gross Primary Productivity, NASA |
-| Promedio de fotosítesis neta en estación seca      | Detección de signos | MODIS/Terra Gross Primary Productivity, NASA |
-| Proporción de crecimiento arbustivo                | Detección de signos | MAD-Mex                                      |
-| Proporsión de crecimiento arbóreo tropical         | Detección de signos | MAD-Mex                                      |
-| Proporción de crecimiento arbóreo                  | Detección de signos | MAD-Mex                                      |
-| VH                                                 | Detección de signos | Sentinel-1 SAR GRD, Copernicus               |
-| VH entropía                                        | Detección de signos | Sentinel-1 SAR GRD, Copernicus               |
-
-Para entrenar la capa latente, se utilizó la hemerobia como proxy de integridad ecológica. Ésta estima el grado de transformación que mostró la vegetación primaria, respecto a la cobertura terrestre actual.
-
-![](images/hemerobia.png)
+| Variable (nombre en código)                   | Nombre de la variable       | Capa                | Fuente                                         |
+|--------------------------|--------------|--------------|------------------|
+| Hemerobia                                     | hemerobia                   | Latente             | Uso de suelo y vegetación, INEGI               |
+| Proporción de cultivos y pastizales           | mad_mex_cultivos_pastizales | Intervención humana | MAD-Mex, CONABIO                               |
+| Proporción de asentamientos humanos           | mad_mex_asentamientos       | Intervención humana | MAD-Mex, CONABIO                               |
+| Proporción de suelo desnudo                   | mad_mex_suelo_desnudo       | Intervención humana | MAD-Mex, CONABIO                               |
+| Zona de vida de Holdridge                     | holdridge                   | Contextual          | Portal de Geoinformación, CONABIO              |
+| Elevación promedio                            | dem90_mean                  | Contextual          | Continuo de Elevaciones Mexicano, INEGI        |
+| Mínimo de elevación                           | dem90_min                   | Contextual          | Continuo de Elevaciones Mexicano, INEGI        |
+| Máximo de elevación                           | dem90_max                   | Contextual          | Continuo de Elevaciones Mexicano, INEGI        |
+| Fotosíntesis promedio anual                   | modis_mean                  | Detección de signos | Terra Gross Primary Productivity, NASA LP DAAC |
+| Desviación estándar anual de fotosíntesis     | modis_sd                    | Detección de signos | Terra Gross Primary Productivity, NASA LP DAAC |
+| Promedio de fotosístesis en estación lluviosa | modis_rainy                 | Detección de signos | Terra Gross Primary Productivity, NASA LP DAAC |
+| Promedio de fotosítesis en estación seca      | modis_dry                   | Detección de signos | Terra Gross Primary Productivity, NASA LP DAAC |
+| Proporción de matorral                        | mad_mex_matorral            | Detección de signos | MAD-Mex, CONABIO                               |
+| Proporsión de selva                           | mad_mex_selva               | Detección de signos | MAD-Mex, CONABIO                               |
+| Proporción de bosque                          | mad_mex_bosque              | Detección de signos | MAD-Mex, CONABIO                               |
+| VH                                            | vh                          | Detección de signos | Sentinel-1, Copernicus Sentinel data           |
+| VH entropía                                   | vh_entropy                  | Detección de signos | Sentinel-1, Copernicus Sentinel data           |
 
 ## Implementación
 
-Se utilizó la paquetería `bnlearn`. Se entrenó la red con datos del 2017, a una resolución de 250m para todo el territorio Mexicano.
+Se utilizó la paquetería `bnlearn` del lenguaje de programación R. Se entrenó la red con datos del 2017, a una resolución de 250m para todo el territorio Mexicano.
 
-La red es un modelo de clasificación (ya que la hemerobia es una variable categórica). El modelo arroja la probabilidad de que cada pixel pertenezca a una de las 18 categorías de la hemerobia y se asigna la categoría con mayor probabilidad a cada pixel. También se estimó la esperanza, la cual fue estandarizada, resultando en un índice del 0 (degradado) al 1 (bien conservado).
+Se puede estimar la integridad ecológica para todo año en el que se tengan datos, con la red entrenada para 2017, ésta se puede encontrar en la carpeta `model_files` con el nombre `prior.RData`. También se encuentra la matriz de adjacencia con la que se creó la red `ienet.csv`.
 
-Se puede estimar la integridad ecológica para todo año en el que se tengan datos, con la red entrenada para 2017, ésta se puede encontrar en la carpeta `model_files` con el nombre `prior.RData`. También se encuentra en esta carpeta la matriz de adjacencia con la que se creó la red.
-
-## Flujo de trabajo
+El flujo de trabajo es el siguiente:
 
 1.  Proyectar cada raster a la misma medida (extent), sistema de coordenadas (epsg) y resolución, mediante el script `scripts/source_extraction/project_raster.R`.
-2.   Transformar los rasters a un dataframe mediante el script `scripts/source_extraction/create_dataframe.R` , el cual recibe el directorio de la carpeta en donde se encuetran los rasters y arroja un dataframe con cada columna con los valores de cada raster y sus respectivas coordenadas geográficas.
+
+2.  Transformar los rasters a un dataframe, mediante el script `scripts/source_extraction/create_dataframe.R` , el cual recibe el directorio de la carpeta en donde se encuetran los rasters y arroja un dataframe cuyas columnas contienen los valores de cada raster y sus respectivas coordenadas geográficas.
+
 3.  Se consideró una red bayesiana discreta, por lo que las variables continuas tienen que ser convertidas a categóricas mediante el script `0. discretize_df.R`.
-4.  Crear una matriz de adyacencia. El script `1. initialize_adj_matrix.R`, recibe el csv creado en el paso anterior y crea una matriz cuyos nombres de cada renglón y columna corresponden al nombre de cada raster. Una vez creada, ésta puede ser manipulada en otro software, como Excel, para ser llenada con 1's donde existe un arco entre las variables. La dirección del arco es renglón ---\> columna.
+
+    Si se desea entrenar una red bayesiana seguir el paso 4 y 5, de lo contrario pasar al 6.
+
+4.  Crear una matriz de adyacencia. El script `1. initialize_adj_matrix.R`, recibe el csv creado en el paso 3 y crea una matriz cuyos nombres de cada renglón y columna corresponden al nombre de cada variable. Una vez creada, ésta puede ser manipulada en otro software, como Excel, para ser llenada con 1's donde existe un arco entre las variables. La dirección del arco es renglón ---\> columna.
+
 5.  El `script 3. fit_model` recibe el dataframe y la matriz de adyacencia para entrenar la red bayesiana, guardando la red ya entrenada.
-6.  Con el script `4. predict_with_bn` se puede predecir la integridad ecológica con la red entrenada en el paso anterior y con nuevos datos, generando un raster.
+
+6.  Con el script `4. predict_with_bn` se puede predecir la integridad ecológica, obteniendo un raster, mediante una red ya entrenada y con datos generados siguiendo del paso 1 al 3.

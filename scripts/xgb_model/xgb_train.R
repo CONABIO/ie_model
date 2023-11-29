@@ -1,3 +1,5 @@
+# trains xgb model 
+
 library('tidyverse')
 library('xgboost')
 library('fastDummies')
@@ -8,6 +10,8 @@ set.seed <- 1
 
 input_folder <- 'data/dataframe'
 output_folder <- 'output'
+categorical_variables <- c('land_cover',
+                           'holdridge')
 
 # read data
 df <- list.files(input_folder, "csv$", full.names = TRUE) %>%
