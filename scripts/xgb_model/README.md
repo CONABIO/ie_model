@@ -3,7 +3,7 @@
 Se desarrolló un modelo XGBoost para estimar la integridad ecológica, con los siguientes datos:
 
 | Variable                                      | Nombre de la variable | Fuente                                         |
-|--------------------|----------------------|---------------------|
+|-----------------------------------------------|-----------------------|------------------------------------------------|
 | Hemerobia                                     | hemerobia             | Uso de suelo y vegetación, INEGI               |
 | Zona de vida de Holdridge                     | holdridge             | Portal de Geoinformación, CONABIO              |
 | Elevación promedio                            | dem90_mean            | DEM GLO-30, Copernicus                         |

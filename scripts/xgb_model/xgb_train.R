@@ -8,10 +8,13 @@ library('hardhat')
 
 set.seed <- 1
 
-input_folder <- 'data/dataframe'
+input_folder <- 'data/model_input/dataframe'
+# input_folder <- 'data/model_input/slic' # with SLIC
 output_folder <- 'output'
 categorical_variables <- c('land_cover',
                            'holdridge')
+coordinate_variables <- c('x','y')
+# coordinate_variables <- c('ID') # with SLIC
 
 # read data
 df <- list.files(input_folder, "csv$", full.names = TRUE) %>%
@@ -19,33 +22,34 @@ df <- list.files(input_folder, "csv$", full.names = TRUE) %>%
 
 df <- df  %>% 
   mutate(across(all_of(c('hemerobia',
-                         'land_cover',
-                         'holdridge'
-  )), as.factor))
+                         categorical_variables)), 
+                as.factor))
 
 # Create dummy variables:
-df <- dummy_cols(df, select_columns = c('holdridge',
-                                        'land_cover'
-))
+df <- dummy_cols(df, select_columns = categorical_variables)
 
 # Split in training and testing stratified by holdridge
 train_index <- createDataPartition(df$holdridge, p = .7, list = FALSE)
 saveRDS(train_index, file=paste0(output_folder,'/train_index.RData'))
 
-df_train= df[train_index,]
-df_test = df[-train_index,]
+df_train <- df[train_index,] %>% 
+  drop_na()
+df_test <- df[-train_index,] %>% 
+  drop_na()
 rm(df)
 rm(train_index)
 
 # Transform the two data sets into xgb.Matrix
 xgb.train <- xgb.DMatrix(data=as.matrix(df_train %>% 
-                                          select(-c('x','y','holdridge',
-                                                    'land_cover','hemerobia'))),
+                                          select(-c(coordinate_variables,
+                                                    'hemerobia',
+                                                    categorical_variables))),
                          label=as.integer(df_train$hemerobia)-1)
 
 xgb.test <- xgb.DMatrix(data=as.matrix(df_test %>% 
-                                         select(-c('x','y','holdridge',
-                                                   'land_cover','hemerobia'))),
+                                         select(-c(coordinate_variables,
+                                                   'hemerobia',
+                                                   categorical_variables))),
                         label=as.integer(df_test$hemerobia)-1)
 
 
@@ -72,7 +76,27 @@ xgb.fit <- xgb.train(
   watchlist=list(train=xgb.train,test=xgb.test),
   verbose=2
 )
+# Save model
 xgb.save(xgb.fit, paste0(output_folder,'/xgb.fit'))
+
+# Save list of variables
+write.csv(colnames(xgb.train), 
+          paste0(output_folder,'/variables_list.csv'),
+          row.names = FALSE)
+
+# Train and test error
 write.csv(as.data.frame(xgb.fit$evaluation_log), 
           paste0(output_folder,'/error.csv'),
           row.names = FALSE)
+ggplot(xgb.fit$evaluation_log) +
+  geom_line(aes(iter, train_merror), col='blue') +
+  geom_line(aes(iter, test_merror), col='orange')
+ggsave(paste0(output_folder,"/error.png"))
+
+# Variables importance 
+importance_matrix <- xgb.importance(colnames(xgb.train),
+                                    model = xgb.fit)
+jpeg(file=paste0(output_folder,"/var_importance.jpeg"),
+     width = 200, height = 150, units='mm', res = 300)
+xgb.plot.importance(importance_matrix = importance_matrix[1:20])
+dev.off()
