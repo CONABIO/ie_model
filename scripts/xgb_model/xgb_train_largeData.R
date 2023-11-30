@@ -20,7 +20,8 @@ df <- list.files(input_folder, "csv$", full.names = TRUE) %>%
   map_dfr(read_csv) 
 
 df <- df  %>% 
-  mutate(across(all_of(c('hemerobia',categorical_variables)),
+  mutate(across(all_of(c('hemerobia',
+                         categorical_variables)),
                 as.factor))
 
 # Split in training and testing stratified by holdridge

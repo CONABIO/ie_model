@@ -13,25 +13,12 @@ output_folder <- 'xgboost/output'
 crs_folder <- 'xgboost'
 
 # read data
-df <- list.files('xgboost/data', "csv$", full.names = TRUE) %>%
-  map_dfr(read_csv) %>% 
-  select(-c('holdridge'))
-df_hol <- list.files('xgboost/data/holdridge_agg', "csv$", full.names = TRUE) %>%
-  map_dfr(read_csv) %>% 
-  rename(holdridge = holdridge_agg)
-df_edge <- list.files('xgboost/data/edge_distance', "csv$", full.names = TRUE) %>%
-  map_dfr(read_csv)
-df <- df %>% 
-  inner_join(df_hol, by=c('x','y')) %>%
-  inner_join(df_edge, by=c('x','y'))
-rm(df_hol)
-rm(df_edge)
+df <- list.files(input_folder, "csv$", full.names = TRUE) %>%
+  map_dfr(read_csv) 
 
 df <- df  %>% 
-  mutate(across(all_of(c('hemerobia',
-                         'land_cover',
-                         'holdridge'
-  )), as.factor))
+  mutate(across(all_of(c('hemerobia',categorical_variables)),
+                as.factor))
 
 # Split in training and testing stratified by holdridge
 train_index <- readRDS(paste0(output_folder,'/train_index.RData'))
