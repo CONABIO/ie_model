@@ -14,33 +14,29 @@ Se desarrolló una red bayesiana para estimar la integridad ecológica, que cuan
 
 Se consideraron las siguientes variables
 
-| Variable (nombre en código)                   | Nombre de la variable       | Capa                | Fuente                                         |
-|--------------------------|--------------|--------------|------------------|
-| Hemerobia                                     | hemerobia                   | Latente             | Uso de suelo y vegetación, INEGI               |
-| Proporción de cultivos y pastizales           | mad_mex_cultivos_pastizales | Intervención humana | MAD-Mex, CONABIO                               |
-| Proporción de asentamientos humanos           | mad_mex_asentamientos       | Intervención humana | MAD-Mex, CONABIO                               |
-| Proporción de suelo desnudo                   | mad_mex_suelo_desnudo       | Intervención humana | MAD-Mex, CONABIO                               |
-| Zona de vida de Holdridge                     | holdridge                   | Contextual          | Portal de Geoinformación, CONABIO              |
-| Elevación promedio                            | dem90_mean                  | Contextual          | Continuo de Elevaciones Mexicano, INEGI        |
-| Mínimo de elevación                           | dem90_min                   | Contextual          | Continuo de Elevaciones Mexicano, INEGI        |
-| Máximo de elevación                           | dem90_max                   | Contextual          | Continuo de Elevaciones Mexicano, INEGI        |
-| Fotosíntesis promedio anual                   | modis_mean                  | Detección de signos | Terra Gross Primary Productivity, NASA LP DAAC |
-| Desviación estándar anual de fotosíntesis     | modis_sd                    | Detección de signos | Terra Gross Primary Productivity, NASA LP DAAC |
-| Promedio de fotosístesis en estación lluviosa | modis_rainy                 | Detección de signos | Terra Gross Primary Productivity, NASA LP DAAC |
-| Promedio de fotosítesis en estación seca      | modis_dry                   | Detección de signos | Terra Gross Primary Productivity, NASA LP DAAC |
-| Proporción de matorral                        | mad_mex_matorral            | Detección de signos | MAD-Mex, CONABIO                               |
-| Proporsión de selva                           | mad_mex_selva               | Detección de signos | MAD-Mex, CONABIO                               |
-| Proporción de bosque                          | mad_mex_bosque              | Detección de signos | MAD-Mex, CONABIO                               |
-| VH                                            | vh                          | Detección de signos | Sentinel-1, Copernicus Sentinel data           |
-| VH entropía                                   | vh_entropy                  | Detección de signos | Sentinel-1, Copernicus Sentinel data           |
+| Fuente de datos                             | Variable                                      | Nombre de la variable       | Capa                | Link de descarga                                                                  | Fuente                                         |
+|-----------|-----------------------|----------------|----------------|-------------|----------------|
+| Hemerobia                                   | Hemerobia                                     | hemerobia                   | Latente             |                                                                                   | Uso de suelo y vegetación, INEGI               |
+| Uso de suelo                                | Proporción de cultivos y pastizales           | mad_mex_cultivos_pastizales | Intervención humana | <https://madmex.conabio.gob.mx>                                                   | MAD-Mex, CONABIO                               |
+|                                             | Proporción de asentamientos humanos           | mad_mex_asentamientos       | Intervención humana |                                                                                   |                                                |
+|                                             | Proporción de suelo desnudo                   | mad_mex_suelo_desnudo       | Intervención humana |                                                                                   |                                                |
+|                                             | Proporción de matorral                        | mad_mex_matorral            | Detección de signos |                                                                                   |                                                |
+|                                             | Proporsión de selva                           | mad_mex_selva               | Detección de signos |                                                                                   |                                                |
+|                                             | Proporción de bosque                          | mad_mex_bosque              | Detección de signos |                                                                                   |                                                |
+| Zona de vida de Holdridge                   | Zona de vida de Holdridge                     | holdridge                   | Contextual          | <http://www.conabio.gob.mx/informacion/gis/?vns=gis_root/region/fisica/zvh_mx3gw> | Portal de Geoinformación, CONABIO              |
+| Elevación (DEM)                             | Elevación promedio                            | dem90_mean                  | Contextual          | <https://code.earthengine.google.com/fd44ec12198a21b7f283a86e2f828c15>            | Continuo de Elevaciones Mexicano, INEGI        |
+|                                             | Mínimo de elevación                           | dem90_min                   | Contextual          |                                                                                   |                                                |
+|                                             | Máximo de elevación                           | dem90_max                   | Contextual          |                                                                                   |                                                |
+| Fotosíntesis (Productividad primaria bruta) | Fotosíntesis promedio anual                   | modis_mean                  | Detección de signos | <https://code.earthengine.google.com/55b24b28652d3a26aa8f5ebc14cc21be>            | Terra Gross Primary Productivity, NASA LP DAAC |
+|                                             | Desviación estándar anual de fotosíntesis     | modis_sd                    | Detección de signos |                                                                                   |                                                |
+|                                             | Promedio de fotosístesis en estación lluviosa | modis_rainy                 | Detección de signos |                                                                                   |                                                |
+|                                             | Promedio de fotosítesis en estación seca      | modis_dry                   | Detección de signos |                                                                                   |                                                |
+| Radar (de apertura sintética en la banda C) | VH                                            | vh                          | Detección de signos | <https://code.earthengine.google.com/55b24b28652d3a26aa8f5ebc14cc21be>            | Sentinel-1, Copernicus Sentinel data           |
+|                                             | VH entropía                                   | vh_entropy                  | Detección de signos |                                                                                   |                                                |
 
 ## Implementación
 
-Se utilizó la paquetería `bnlearn` del lenguaje de programación R. Se entrenó la red con datos del 2017, a una resolución de 250m para todo el territorio Mexicano.
-
-Se puede estimar la integridad ecológica para todo año en el que se tengan datos, con la red entrenada para 2017, ésta se puede encontrar en la carpeta `model_files` con el nombre `prior.RData`. También se encuentra la matriz de adjacencia con la que se creó la red `ienet.csv`.
-
-El flujo de trabajo es el siguiente:
+Se utilizó la paquetería `bnlearn` del lenguaje de programación R. Se entrenó la red con datos del 2017, a una resolución de 250m para todo el territorio Mexicano. El flujo de trabajo es el siguiente:
 
 1.  Proyectar cada raster a la misma medida (extent), sistema de coordenadas (epsg) y resolución, mediante el script `scripts/source_extraction/project_raster.R`.
 
@@ -55,3 +51,5 @@ El flujo de trabajo es el siguiente:
 5.  El `script 3. fit_model` recibe el dataframe y la matriz de adyacencia para entrenar la red bayesiana, guardando la red ya entrenada.
 
 6.  Con el script `4. predict_with_bn` se puede predecir la integridad ecológica, obteniendo un raster, mediante una red ya entrenada y con datos generados siguiendo del paso 1 al 3.
+
+Se puede estimar la integridad ecológica para todo año en el que se tengan datos, con la red entrenada para 2017, ésta se puede encontrar en la carpeta `model_files` con el nombre `prior.RData`. También se encuentra la matriz de adjacencia con la que se creó la red `ienet.csv`.

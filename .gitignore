@@ -4,4 +4,4 @@
 data/
 output/
 README.html
-scripts/evaluate.R
+scripts/output_evaluation/

@@ -1,8 +1,29 @@
-# Accuracy
+library('tidyverse')
+library('terra')
+
+r_ei <- terra::rast('output/bn v1/ie_cat.tif')
+r_hemerobia <- terra::rast('data/model_input/rasters/hemerobia.tif')
+r_hemerobia <- project(r_hemerobia, r_ei)
+df_is_train <- read_csv('output/xgb v1/is_train.csv')
+
+r_is_train <- terra::rast(df_is_train)
+crs(r_is_train) <- crs(r_ei)
+
+df <- terra::as.data.frame(c(r_hemerobia,
+                             # r_is_train,
+                             r_ei),
+                     xy = TRUE, na.rm = TRUE) 
+
+mean(df$ie==df$hemerobia_raw)
+
+
+df_train <- df %>% 
+  filter(is_train==1)
+df_test <- df %>% 
+  filter(is_train==0)
+
 mean(df_train$prediction==df_train$hemerobia)
 mean(df_test$prediction==df_test$hemerobia)
-df <- rbind(df_train,df_test)
-mean(df$prediction==df$hemerobia)
 
 table(df_test$hemerobia, df_test$prediction)
 confusionMatrix(df_test$hemerobia, as.factor(df_test$prediction))

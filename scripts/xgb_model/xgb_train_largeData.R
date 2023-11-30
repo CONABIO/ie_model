@@ -24,10 +24,18 @@ df <- df  %>%
                          categorical_variables)),
                 as.factor))
 
-# Split in training and testing stratified by holdridge
+# Create partition stratified by holdridge
 train_index <- createDataPartition(df$holdridge, p = .7, list = FALSE)
-saveRDS(train_index, file=paste0(output_folder,'/train_index.RData'))
+# saveRDS(train_index, file=paste0(output_folder,'/train_index.RData'))
+# Save dataframe with partition indicator
+df$is_train <- 0
+df[train_index[,1],'is_train'] <- 1
+write.csv(df %>% 
+            select(x, y, is_train), 
+          paste0(output_folder,'/is_train.csv'),
+          row.names = FALSE)
 
+# Split in training and testing
 df_train <- df[train_index,]
 df_test = df[-train_index,]
 rm(df)
