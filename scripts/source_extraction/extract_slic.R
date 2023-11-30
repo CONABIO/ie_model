@@ -21,10 +21,6 @@ r_variables <- rast(raster_files)
 names(r_variables) <- col_names
 numerical_variables <- setdiff(col_names, categorical_variables)
 
-# coord <- c(3950523, 3960316, 888945.4, 900515)
-# r_variables <- terra::crop(r_variables,coord)
-# sf <- crop(sf,coord)
-
 r_cat <- r_variables[[categorical_variables]]
 r_num <- r_variables[[numerical_variables]]
 
