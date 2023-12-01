@@ -15,7 +15,7 @@ output_folder <- 'output'
 mask_file <- 'data/sources/mex_mask/Mask_IE2018.tif'
 categorical_variables <- c('land_cover',
                            'holdridge')
-is_slic <- TRUE
+is_slic <- TRUE # TRUE if the model uses SLIC, FALSE if not
 
 # read data
 df <- list.files(input_folder, "csv$", full.names = TRUE) %>%
@@ -29,7 +29,8 @@ if(is_slic){
 df <- df %>% 
   select_if(!names(.) %in% c('hemerobia')) %>% 
   drop_na() %>% 
-  mutate(across(all_of(categorical_variables), as.factor))
+  mutate(across(all_of(categorical_variables), 
+                as.factor))
 
 # Create dummy variables:
 df <- dummy_cols(df, select_columns = categorical_variables)
@@ -43,8 +44,7 @@ if(is_slic) {
 xgb.matrix <- xgb.DMatrix(data=as.matrix(df %>% 
                                          select(-c(coordinates_var,
                                                    categorical_variables
-                                                   ))),
-                        label=as.integer(df$hemerobia)-1)
+                                                   ))))
 
 # Predict outcomes
 xgb.pred <- as.data.frame(predict(xgb.fit,xgb.matrix,reshape=T))

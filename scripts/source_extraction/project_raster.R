@@ -1,4 +1,4 @@
-# project raster to r_mask's extent, epsg and resolution
+# project raster to mask's extent, epsg and resolution
 
 library('terra')
 library('tidyterra')
