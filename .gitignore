@@ -5,4 +5,3 @@ data/
 output/
 README.html
 scripts/output_evaluation/
-scripts/xgb_model/model_files/
