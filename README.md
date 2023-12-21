@@ -12,8 +12,8 @@ Para modelar la hemerobia se tomaron en cuenta variables relacionadas a la integ
 
 El ráster de cada una de las variables fue transformado a una misma resolución de 250m x 250m.
 
-| Fuente de datos                             | Definición                                                                                                                     | Variable                                     | Resolución de origen (m)           | Transformación a resolución de 250m | Fuente                                         |
-|-----------|-------------------|------------------|-----------|-------------|------------|
+| Fuente de datos                             | Definición                                                                                                                     | Variables                                    | Resolución de origen (m)           | Transformación a resolución de 250m | Fuente                                         |
+|------------|------------|------------|------------|------------|------------|
 | Hemerobia                                   | Grado de transformación que mostró la vegetación primaria respecto a la cobertura terrestre actual                             | Hemerobia                                    | 250                                | \-                                  | Uso de suelo y vegetación, INEGI               |
 | Zona de vida de Holdridge                   | Agrupa en 28 zonas basándose en precipitación, biotemperatura y la evapotranspiración                                          | Zona de vida de Holdridge                    | 260                                | Interpolación con Nearest Neighbor  | Portal de Geoinformación, CONABIO              |
 | Elevación (DEM)                             | Altura sobre nivel promedio del mar                                                                                            | Promedio                                     | 30                                 | Promedio                            | DEM GLO-30, Copernicus                         |
@@ -27,7 +27,7 @@ El ráster de cada una de las variables fue transformado a una misma resolución
 |                                             |                                                                                                                                | DE anual de banda VH y VV                    |                                    |                                     |                                                |
 |                                             |                                                                                                                                | Entropía del promedio anual de banda VV y VH |                                    |                                     |                                                |
 | Distancia al borde                          | Distancia, en metros, de cada pixel al borde del parche                                                                        | Distancia al borde                           | 250                                | \-                                  |                                                |
-| Uso de suelo                                | Estimación basada en imágenes satelitales del tipo de uso de suelo, que incluye cultivos, asentamientos urbanos, bosques, etc. | Uso de suelo                                 | 500                                | Interpolación con Nearest Neighbor  | MODIS Land Cover Type, NASA LP DAAC            |
+| Uso de suelo (MODIS Land Cover)             | Estimación basada en imágenes satelitales del tipo de uso de suelo, que incluye cultivos, asentamientos urbanos, bosques, etc. | Uso de suelo                                 | 500                                | Interpolación con Nearest Neighbor  | MODIS Land Cover Type, NASA LP DAAC            |
 | Uso de suelo (MAD-Mex)                      | Estimación basada en Landsat                                                                                                   | Proporción de cultivos y pastizales          | 30                                 | Proporción de cada categoría        | MAD-Mex, CONABIO                               |
 |                                             |                                                                                                                                | Proporción de asentamientos humanos          |                                    |                                     |                                                |
 |                                             |                                                                                                                                | Proporción de suelo desnudo                  |                                    |                                     |                                                |
@@ -62,19 +62,19 @@ Es un modelo probabilístico gráfico, donde cada nodo corresponde a una variabl
 
 ![](images/red_resumida_espanol.png){width="641"}
 
-El modelo estima la probabilidad de pertenecer a cada clase de la hemerobia para cada uno de los pixeles. Para estimar el IIE, se calculó el promedio de las clases ponderado por la probabilidad de cada una de ellas, obteniendo un valor continuo del 0 al 18. Para obtener un índice del 0 al 1, se dividió entre 18. Y para que el 0 represente el estado con mayor degradación y el 1 el estado intacto, se restó este valor a la unidad.
+El modelo estima la probabilidad de pertenecer a cada clase de la hemerobia para cada uno de los pixeles. Para estimar el IIE, se calculó el promedio de las clases ponderado por la probabilidad de cada una de ellas, obteniendo un valor continuo del 0 al 18. Para obtener un índice del 0 al 1, se dividió entre 18. Y para que el 0 represente el estado con mayor degradación y el 1 el estado intacto, se restó este valor a la unidad. A continuación se muestra un ejemplo:
 
 | pixel | Clase 0 | Clase 1 | ... | Clase 18 | Predicción |
 |-------|---------|---------|-----|----------|------------|
 | x     | 0.1     | 0.1     |     | 0.7      | 0.2        |
 
 $$
-1-\frac{\sum_{k=0}^{18} kp_k}{18}=1-\frac{0(0.1)+1(0.1)+...+18(0.7)}{18}=0.2
+IIE=1-\frac{\sum_{k=0}^{18} kp_k}{18}=1-\frac{0(0.1)+1(0.1)+...+18(0.7)}{18}=0.2
 $$
 
 La transformación anterior se realizó con el fin de obtener un valor continuo a partir de un valor categórico. Este método supone que existe el mismo espacio entre categorías de la hemerobia, por ejemplo, pasar del estado 3 al 4, representa la misma degradación que pasar del 14 al 15. De ser esto correcto, sería más adecuado que la conversión se hiciera antes de entrenar el modelo y que éste fuera una regresión, ya que así el modelo tomaría en cuenta el orden de las categorías, lo que no ocurre con un modelo de clasificación. Otro inconveniente de la transformación es la pérdida de interpretabilidad, pues no se sabe qué categoría de la hemerobia se predice para cada pixel, esto a su vez representa un problema al analizar la precisión del modelo, pues la predicción no puede ser directamente comparada con la hemerobia.
 
-Otra manera de asignar los valores del mapa con el modelo de clasificación, es tomar la clase que tiene mayor probabilidad. De esta forma la precisión del modelo puede ser evaluada, comparando la predicción con la verdadera categoría (hemerobia).
+Otra manera de asignar los valores del mapa con el modelo de clasificación, es tomar la clase que tiene mayor probabilidad, como en el ejemplo de la siguiente tabla. De esta forma la precisión del modelo puede ser evaluada, comparando la predicción con la verdadera categoría (hemerobia).
 
 | Pixel | Clase 0 | Clase 1 | ... | Clase 18 | Predicción |
 |-------|---------|---------|-----|----------|------------|
@@ -118,3 +118,5 @@ $$
 Observando los mapas, las 3 predicciones son parecidas a la hemerobia. El IIE, estimado mediante la red bayesiana con INFyS y calculando el promedio ponderado, da un mapa suavizado, no hace diferencia entre ciertas zonas con integridad similar. El modelo XGBoost sí lo hace, sin embargo, presenta un efecto *sal y pimienta*. Por último, se observa que el modelo que utiliza *superpixeles*, es el más parecido a la hemerobia.
 
 ![](images/model_comparison.jpg)
+
+Si se quiere conocer los detalles de la implementación, se puede encontrar la documentación en la carpeta de cada modelo `scripts/bn_model` y `scripts/xgb_model`.

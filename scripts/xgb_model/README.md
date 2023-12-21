@@ -3,7 +3,7 @@
 Se desarrolló un modelo XGBoost para estimar la integridad ecológica, con los siguientes datos:
 
 | Fuente de datos                             | Variable                                      | Nombre de la variable | Resolución de origen (m) | Transformación a resolución de 250m | Link de descarga                                                                  | Referencia                                     |
-|--------------|--------------|--------------|-------------|----------------|--------------|----------------|
+|-----------|-----------|-----------|-----------|-----------|-----------|-----------|
 | Hemerobia                                   | Hemerobia                                     | hemerobia             | 250                      | \-                                  |                                                                                   | Uso de suelo y vegetación, INEGI               |
 | Zona de vida de Holdridge                   | Zona de vida de Holdridge                     | holdridge             | 260                      | Interpolación con Nearest Neighbor  | <http://www.conabio.gob.mx/informacion/gis/?vns=gis_root/region/fisica/zvh_mx3gw> | Portal de Geoinformación, CONABIO              |
 | Elevación (DEM)                             | Elevación promedio                            | dem90_mean            | 30                       | Promedio\*                          | <https://code.earthengine.google.com/fd44ec12198a21b7f283a86e2f828c15>            | DEM GLO-30, Copernicus                         |
@@ -25,7 +25,7 @@ Se desarrolló un modelo XGBoost para estimar la integridad ecológica, con los 
 
 ## Implementación
 
-Se utilizó la paquetería `xgboost` del lenguaje de programación R. Se entrenó el modelo con datos del 2017, a una resolución de 250m para todo el territorio Mexicano. Se puede estimar la integridad ecológica para todo año en el que se tengan datos, con el modelo entrenado para 2017, éste se puede encontrar en la carpeta `model_files` con el nombre `xgb.fit` y `xgb.fit_slic` para el modelo que usa SLIC.
+Se utilizó la paquetería `xgboost` del lenguaje de programación R. Se entrenó el modelo con datos del 2017, a una resolución de 250m para todo el territorio Mexicano. Se puede estimar la integridad ecológica para todo año en el que se tengan datos, con el modelo entrenado para 2017, éste se puede encontrar en la carpeta `models` con el nombre `xgb.fit` y `xgb.fit_slic` para el modelo que usa SLIC.
 
 El flujo de trabajo es el siguiente:
 
