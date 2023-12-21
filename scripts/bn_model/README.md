@@ -72,7 +72,7 @@ Se utilizó la paquetería `bnlearn` del lenguaje de programación R. Se entren�
 
 El flujo de trabajo es el siguiente:
 
-1.  Proyectar cada raster a la misma extención, sistema de coordenadas (epsg) y resolución, mediante el script `scripts/source_extraction/project_raster.R`, que toma un raster de referencia que tiene la exención, epsg y resolución deseada (este se puede encontrar en la carpeta `model_files` con el nombre `Mask_IE2018.tif`). Para proyectar rasters con valores continuos, se utilizó el método `average` (promedio) y para valores categóricos `near` (Nearest neighbor).
+1.  Proyectar cada raster a la misma extención, sistema de coordenadas (epsg) y resolución, mediante el script `scripts/source_extraction/project_raster.R`, que toma un raster de referencia que tiene la exención, epsg y resolución deseada (este se puede encontrar en la carpeta `scripts/source_extraction` con el nombre `Mask_IE2018.tif`). Para proyectar rasters con valores continuos, se utilizó el método `average` (promedio) y para valores categóricos `near` (Nearest neighbor).
 
 2.  Transformar los rasters a un dataframe, mediante el script `scripts/source_extraction/create_dataframe.R` , el cual recibe el directorio de la carpeta en donde se encuetran los rasters y arroja un dataframe cuyas columnas contienen los valores de cada raster y sus respectivas coordenadas geográficas.
 
