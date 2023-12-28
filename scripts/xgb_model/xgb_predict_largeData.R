@@ -1,4 +1,5 @@
-# predict ecological integrity raster with sparse matrix
+# Predict ecological integrity raster with XGBoost trained model
+# with sparse matrix
 
 library('tidyverse')
 library('xgboost')
@@ -10,13 +11,15 @@ library('Matrix')
 
 set.seed <- 1
 
+# ======================Input============================
 input_folder <- 'xgboost/data'
 output_folder <- 'xgboost/output'
 mask_file <- 'data/sources/mex_mask/Mask_IE2018.tif'
 categorical_variables <- c('land_cover',
                            'holdridge')
 
-# read data
+# ==================Processing data======================
+# Read data
 df <- list.files(input_folder, "csv$", full.names = TRUE) %>%
   map_dfr(read_csv) 
 xgb.fit <- xgb.load(paste0(output_folder,'/xgb.fit.20'))
@@ -33,12 +36,13 @@ spm <- sparse.model.matrix( ~ ., data = df %>%
 # Transform the two data sets into xgb.Matrix
 xgb.matrix <- xgb.DMatrix(data=spm)
 
-# Predict outcomes
+# ====================Predicting==========================
 xgb.pred <- as.data.frame(predict(xgb.fit,xgb.matrix,reshape=T))
-colnames(xgb.pred) <- levels(df_test$hemerobia)
+# Hemerobia used in training doesn't have categories 0 and 17
+colnames(xgb.pred) <- c(seq(1,16,by=1),18)
 df$prediction <- as.numeric(colnames(xgb.pred)[apply(xgb.pred,1,which.max)])
 
-# Create raster
+# =================Creating raster========================
 r_pred <- terra::rast(df %>% 
                         select(x, y, prediction))
 crs(r_pred) <- crs(r_mask)

@@ -1,8 +1,8 @@
-# predicts ecological integrity based on input data and trained Bayesian network
+# Predicts ecological integrity based on input data and trained Bayesian network
 
 library('gRain')
 
-#' Function to predict ie
+#' Function to predict ecological integrity
 #' @param prior RData trained Bayesian network
 #' @param input_csv Path to cases csv file to be evaluated
 #' @param total_rows Number of total cases
@@ -40,7 +40,7 @@ predict_ie_bn <- function(
   
   gc(reset = TRUE)
   
-  # prediction
+  # Prediction
   cat(format(Sys.time(), "%Y/%m/%e %H:%M:%S")," - Empieza prediccion del cluster ", i_cluster, "\n")
   prediction <- predict(prior,
                         response="hemerobia",
@@ -49,16 +49,16 @@ predict_ie_bn <- function(
   
   probabilities <- prediction$pred$hemerobia
   
-  # raster with standardized expectancy
+  # Raster with standardized expectancy
   expectancy <- probabilities %*%  as.numeric(colnames(probabilities))
   expectancy <- (18-expectancy)/(18)
   df_exp <- data.frame(x=df$x,y=df$y,ie=expectancy)
   
-  # raster with most probable category
+  # Raster with most probable category
   category <- colnames(probabilities)[apply(probabilities,1,which.max)]
   df_cat <- data.frame(x=df$x,y=df$y,ie=category)
   
-  # save rasters
+  # Save rasters
   cat(format(Sys.time(), "%Y/%m/%e %H:%M:%S"), " - Escribiendo resultados del cluster ", i_cluster, "\n")
   write.csv(df_exp,file.path(out_path,'df_expectancy',paste0('df_exp_',i_cluster,'.csv')),
             row.names = FALSE)
@@ -69,7 +69,7 @@ predict_ie_bn <- function(
 
 input_csv <- 'data/model_input/discretized_df/df_input.csv'
 out_path <- 'output'
-prior_file <- 'data/model_input/prior/prior.RData'
+prior_file <- 'data/model_input/prior/prior.RData' # Trained Bayesina network
 n_parts <- 10000
 
 total_rows <- as.numeric(system(paste("cat", input_csv, "| wc -l"), intern = TRUE)) - 1

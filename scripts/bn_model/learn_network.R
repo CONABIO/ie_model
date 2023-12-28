@@ -1,4 +1,4 @@
-# learns the structure of the Bayesian network, 
+# Learns the structure of the Bayesian network, 
 # trains it with input data 
 # and saves the trained model
 
@@ -7,11 +7,11 @@ library('bnlearn')
 library('gRain')
 library('igraph')
 
+# Input data
 df <- read.csv('data/model_input/discretized_df/df_input.csv')
-
-# set of arcs to be included in the graph
+# Set of arcs to be included in the graph
 whitelist <- read.csv('data/model_input/network/whitelist.csv')
-# set of arcs not to be included in the graph
+# Set of arcs not to be included in the graph
 blacklist <- read.csv('data/model_input/network/blacklist.csv')
   
 df <- df  %>% 
@@ -22,11 +22,11 @@ network <-hc(df %>% select(-c('x','y')),
              whitelist = whitelist,
              blacklist = blacklist)
 
-# Fit bayesian network.
+# Fit Bayesian network
 fitted <- bn.fit(network, data.frame(df[,3:ncol(df)]), method = "bayes")
 
-# We use the junction tree algorithm to create 
-# an independence network that we can query
+# Use the junction tree algorithm to create 
+# an independence network that can be query
 prior <- compile(as.grain(fitted))
 
 # Plot network

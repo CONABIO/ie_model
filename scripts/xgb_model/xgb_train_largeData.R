@@ -1,4 +1,5 @@
-# train xgb model when data is large
+# Trains XGBoost classification model for ecological integrity estimation
+# when data is large
 
 library('tidyverse')
 library('xgboost')
@@ -10,12 +11,13 @@ library('Matrix')
 
 set.seed <- 1
 
+# ======================Input============================
 input_folder <- 'data/model_input/dataframe'
 output_folder <- 'output'
 categorical_variables <- c('land_cover',
                            'holdridge')
 
-# read data
+# ==================Processing data======================
 df <- list.files(input_folder, "csv$", full.names = TRUE) %>%
   map_dfr(read_csv) 
 
@@ -25,13 +27,16 @@ df <- df  %>%
                 as.factor))
 
 # Create partition stratified by holdridge
+# 70% for training and 30% for testing
 train_index <- createDataPartition(df$holdridge, p = .7, list = FALSE)
-# saveRDS(train_index, file=paste0(output_folder,'/train_index.RData'))
-# Save dataframe with partition indicator
-df$is_train <- 0
-df[train_index[,1],'is_train'] <- 1
-write.csv(df %>% 
-            select(x, y, is_train), 
+
+# Save csv with coordinates and indicator 
+# (1=training data point, 0=testing data point)
+df_is_train <- df %>% 
+  select(x, y)
+df_is_train$is_train <- 0 
+df_is_train[train_index[,1],'is_train'] <- 1
+write.csv(df_is_train, 
           paste0(output_folder,'/is_train.csv'),
           row.names = FALSE)
 
@@ -41,7 +46,7 @@ df_test = df[-train_index,]
 rm(df)
 rm(train_index)
 
-# Create dummy variables
+# Create sparse matrices
 spm_train <- sparse.model.matrix( ~ ., data = df_train %>% 
                                    select(-c('x','y',
                                              'hemerobia')))[,-1]
@@ -61,8 +66,8 @@ xgb.train <- xgb.DMatrix(data=spm_train,
 xgb.test <- xgb.DMatrix(data=spm_test,
                         label=as.integer(label_test)-1)
 
-
-# Define the parameters for multinomial classification
+# ======================Training model============================
+# Define the parameters
 params <- list(
   booster="gbtree",
   objective="multi:softprob",
@@ -76,7 +81,7 @@ params <- list(
   num_class=length(levels(label_train))
 )
 
-# Train model iteratively
+# Train model with 100 iterations
 xgb.fit.current <- xgb.train(
   params=params,
   data=xgb.train,
@@ -86,15 +91,15 @@ xgb.fit.current <- xgb.train(
   save_period=2,
   verbose=2
 )
+# Save model and its error
 xgb.save(xgb.fit.current, paste0(output_folder,'/xgb.fit.0'))
 write.csv(as.data.frame(xgb.fit.current$evaluation_log), 
           paste0(output_folder,'/error_0.csv'),
           row.names = FALSE)
-# Save list of variables
-write.csv(colnames(xgb.train), 
-          paste0(output_folder,'/variables_list.csv'),
-          row.names = FALSE)
 
+# Keep on training model iteratively
+# Each iteration takes the model trained in the last one to continue the 
+# training from
 for (i in 1:20){
   xgb.fit.new <- xgb.train(
     params=params,
@@ -106,6 +111,7 @@ for (i in 1:20){
     save_period=2,
     verbose=2
   )
+  # Save model and its error
   xgb.save(xgb.fit.new, paste0(output_folder,'/xgb.fit.',i))
   write.csv(as.data.frame(xgb.fit.new$evaluation_log), 
             paste0(output_folder,'/error_',i,'.csv'),
@@ -113,7 +119,13 @@ for (i in 1:20){
   xgb.fit.current <- xgb.fit.new
 }
 
-# Variables importance 
+# =====================Saving other===========================
+# Save list of input variables
+write.csv(colnames(xgb.train), 
+          paste0(output_folder,'/variables_list.csv'),
+          row.names = FALSE)
+
+# Save variables importance 
 importance_matrix <- xgb.importance(colnames(xgb.train),
                                     model = xgb.fit.current)
 jpeg(file=paste0(output_folder,"/var_importance.jpeg"),

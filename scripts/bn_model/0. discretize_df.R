@@ -1,28 +1,27 @@
-# discretizes numerical data
+# Discretizes numerical data to serve as input for a Bayesian network
 
 library('tidyverse')
-
-discretizeCols <- function(bnbrik_df, numeric_var_vec,
-                           breaks_vec=rep(5,length(numeric_var_vec)),
-                           method="interval"){
-  
-  bnbrik_df[,numeric_var_vec] = bnlearn::discretize(bnbrik_df[,numeric_var_vec],
-                                                    breaks=breaks_vec,
-                                                    method=method)
-  return(bnbrik_df)
-}
+library('bnlearn')
 
 input_folder <- 'data/model_input/dataframe'
 output_folder <- 'data/model_input/discretized_df'
-categorical_var <- c("hemerobia","holdridge")
+categorical_variables <- c("hemerobia","holdridge")
 
-# read data
+# Read data
 df <- list.files(input_folder, "csv$", full.names = TRUE) %>%
   map_dfr(read_csv)
 
-# Transform to factors
 df <- df  %>% 
-  mutate(across(all_of(categorical_var), as.factor))
-df <- discretizeCols(df,setdiff(names(df), c("x","y",categorical_var)))
+  mutate(across(all_of(categorical_variables), as.factor))
+
+numerical_variables <- setdiff(names(df), c("x","y",categorical_variables))
+
+# Define 5 categories for each numerical column
+breaks_vec <- rep(5,length(numerical_variables))
+# Transform numerical columns to categorical
+df[,numerical_variables] <- bnlearn::discretize(df[,numerical_variables],
+                                                breaks = breaks_vec,
+                                                method = 'interval')
+
 
 write.csv(df,paste0(output_folder,'/df_input.csv'), row.names = FALSE)

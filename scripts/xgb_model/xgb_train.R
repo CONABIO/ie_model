@@ -1,4 +1,4 @@
-# trains xgb model 
+# Trains XGBoost classification model for ecological integrity estimation
 
 library('tidyverse')
 library('xgboost')
@@ -8,15 +8,15 @@ library('hardhat')
 
 set.seed <- 1
 
+# ======================Input============================
 input_folder <- 'data/model_input/dataframe'
-# input_folder <- 'data/model_input/slic' # with SLIC
 output_folder <- 'output'
 categorical_variables <- c('land_cover',
                            'holdridge')
 coordinate_variables <- c('x','y')
-# coordinate_variables <- c('ID') # with SLIC
+# coordinate_variables <- c('ID') # if SLIC is used
 
-# read data
+# ==================Processing data======================
 df <- list.files(input_folder, "csv$", full.names = TRUE) %>%
   map_dfr(read_csv)
 
@@ -25,26 +25,27 @@ df <- df  %>%
                          categorical_variables)), 
                 as.factor))
 
-# Create dummy variables:
+# Create dummies for categorical
 df <- dummy_cols(df, select_columns = categorical_variables)
 
 # Create partition stratified by holdridge
+# 70% for training and 30% for testing
 train_index <- createDataPartition(df$holdridge, p = .7, list = FALSE)
-# saveRDS(train_index, file=paste0(output_folder,'/train_index.RData'))
-# Save dataframe with partition indicator
-df$is_train <- 0
-df[train_index[,1],'is_train'] <- 1
-write.csv(df %>% 
-            select(x, y, is_train), 
+
+# Save csv with coordinates and indicator 
+# (1=training data point, 0=testing data point)
+df_is_train <- df %>% 
+  select(x, y)
+df_is_train$is_train <- 0 
+df_is_train[train_index[,1],'is_train'] <- 1
+write.csv(df_is_train, 
           paste0(output_folder,'/is_train.csv'),
           row.names = FALSE)
 
 # Split in training and testing
 df_train <- df[train_index,] %>% 
-  select(-c('is_train')) %>% 
   drop_na()
 df_test <- df[-train_index,] %>% 
-  select(-c('is_train')) %>% 
   drop_na()
 rm(df)
 rm(train_index)
@@ -62,8 +63,8 @@ xgb.test <- xgb.DMatrix(data=as.matrix(df_test %>%
                                                    categorical_variables))),
                         label=as.integer(df_test$hemerobia)-1)
 
-
-# Define the parameters for multinomial classification
+# ======================Training model============================
+# Define the parameters
 params <- list(
   booster="gbtree",
   objective="multi:softprob",
@@ -86,15 +87,17 @@ xgb.fit <- xgb.train(
   watchlist=list(train=xgb.train,test=xgb.test),
   verbose=2
 )
+
+# =====================Saving output===========================
 # Save model
 xgb.save(xgb.fit, paste0(output_folder,'/xgb.fit'))
 
-# Save list of variables
+# Save list of input variables
 write.csv(colnames(xgb.train), 
           paste0(output_folder,'/variables_list.csv'),
           row.names = FALSE)
 
-# Train and test error
+# Save train and test error
 write.csv(as.data.frame(xgb.fit$evaluation_log), 
           paste0(output_folder,'/error.csv'),
           row.names = FALSE)
@@ -103,7 +106,7 @@ ggplot(xgb.fit$evaluation_log) +
   geom_line(aes(iter, test_merror), col='orange')
 ggsave(paste0(output_folder,"/error.png"))
 
-# Variables importance 
+# Save variables importance 
 importance_matrix <- xgb.importance(colnames(xgb.train),
                                     model = xgb.fit)
 jpeg(file=paste0(output_folder,"/var_importance.jpeg"),
