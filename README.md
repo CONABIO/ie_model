@@ -217,8 +217,9 @@ efecto *sal y pimienta*. Por último, se observa que el modelo que utiliza
 
 > [!NOTE]
 > Si se quiere conocer los detalles de la implementación, se puede encontrar la 
-> documentación en la carpeta de cada modelo `scripts/bn_model` y 
-> `scripts/xgb_model`.
+> documentación en la carpeta de cada modelo
+> [`scripts/bn_model`](./scripts/bn_model) y
+> [`scripts/xgb_model`](./scripts/xgb_model).
 
 ## Referencias
 
