@@ -8,7 +8,7 @@ de elementos y procesos que se esperarían en el área natural de la región.
 ## Datos
 
 La integridad ecológica no puede ser directamente observada, por lo que se 
-utilizó la hemerobia como *proxy*, asumiendo que puede ser considerada como una 
+utilizó la hemerobia como *proxy*, suponiendo que puede ser considerada como una 
 medición de la integridad. Ésta representa el grado de transformación que mostró 
 la vegetación primaria respecto a la cobertura terrestre actual, siendo una 
 variable categórica ordinal, donde 0 es el estado intacto y 18 el de mayor 
@@ -71,7 +71,7 @@ DE: Desviación Estándar
 
 ## Modelos
 
-Teniendo un proxy de la variable que se quiere predecir y siendo ésta una 
+Teniendo un *proxy* de la variable que se quiere predecir y siendo ésta una 
 variable categórica, se puede ajustar un modelo supervisado de tipo 
 clasificación. En este caso, se usó una red bayesiana y XGBoost.
 
@@ -107,7 +107,7 @@ continuación se muestra un ejemplo:
 | x     | 0.1     | 0.1     |     | 0.7      | 0.2        |
 
 $$
-IIE=1-\frac{\sum_{k=0}^{18} kp_k}{18}=1-\frac{0(0.1)+1(0.1)+...+18(0.7)}{18}=0.2
+\mathrm{IIE}=1-\frac{ \sum_{k=0}^{18} k p_k }{ 18 }=1-\frac{ 0 (0.1)+1 (0.1)+...+18 (0.7) }{ 18 }=0.2
 $$
 
 La transformación anterior se realizó con el fin de obtener un valor continuo a 
@@ -129,13 +129,13 @@ predicción con la verdadera categoría (hemerobia).
 
 | Pixel | Clase 0 | Clase 1 | ... | Clase 18 | Predicción |
 |-------|---------|---------|-----|----------|------------|
-| x     | 0.1     | 0.1     |     | 0.7      | 18         |
+| x     | 0.1     | 0.1     |     | **0.7**  | 18         |
 
 La estructura del grafo de la red bayesiana debe ser definida previamente al 
 entrenamiento. En este caso, se definió de manera conjunta por expertos y por un 
-algoritmo que aprende la estructura a partir de los datos. En el grafo cada 
+algoritmo que aprende la estructura a partir de los datos[^1]. En el grafo cada 
 arista representa la dependencia condicional entre las variables que conecta 
-(padre ---\> hijo), por lo que cada variable es independiente de las variables 
+(padre 🡒 hijo), por lo que cada variable es independiente de las variables 
 no hijas dado el valor de sus variables padres, por ejemplo, la variable 
 fotosíntesis es independiente de la variable de radar VH, dado el valor de la 
 hemerobia. Esto podría ser una desventaja, pues el modelo solo aprende de las 
@@ -155,7 +155,8 @@ combinan las predicciones de los árboles en una predicción total.
 Para entrenar el modelo se tomaron de manera aleatoria el 70% de los datos, el 
 30% restante se usó para su validación. Con este modelo de clasificación, al 
 igual que con la red bayesiana, se obtiene la probabilidad de que cada pixel 
-pertenezca a cada clase de la hemerobia, asignando la de mayor probabilidad.
+pertenezca a cada clase de la hemerobia, se asignó el valor con la de mayor 
+probabilidad.
 
 ### SLIC
 
@@ -204,8 +205,9 @@ $$
 k=\mathrm{redondear}(-18(\mathrm{IIE}-1))
 $$
 
-Observando los mapas, las 3 predicciones son parecidas a la hemerobia. La 
-integridad ecológica, estimada mediante la red bayesiana con INFyS y calculando 
+Observando los mapas, las 3 predicciones son parecidas a la hemerobia, lo cual
+es congruente con los resultados presentados en la tabla. La  integridad 
+ecológica, estimada mediante la red bayesiana con INFyS y calculando 
 el IIE, da un mapa suavizado, no hace diferencia entre ciertas zonas con 
 integridad similar. El modelo XGBoost sí lo hace, sin embargo, presenta un 
 efecto *sal y pimienta*. Por último, se observa que el modelo que utiliza 
@@ -213,6 +215,11 @@ efecto *sal y pimienta*. Por último, se observa que el modelo que utiliza
 
 ![](images/model_comparison.jpg)
 
-Si se quiere conocer los detalles de la implementación, se puede encontrar la 
-documentación en la carpeta de cada modelo `scripts/bn_model` y 
-`scripts/xgb_model`.
+> [!NOTE]
+> Si se quiere conocer los detalles de la implementación, se puede encontrar la 
+> documentación en la carpeta de cada modelo `scripts/bn_model` y 
+> `scripts/xgb_model`.
+
+## Referencias
+
+[^1]: https://github.com/jequihua/ei-workshop
