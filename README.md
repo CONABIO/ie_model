@@ -37,7 +37,7 @@ El ráster de cada una de las variables fue transformado a una misma resolución
 de 250m x 250m.
 
 | Fuente de datos                             | Definición                                                                                                                     | Variables                                    | Resolución de origen (m)           | Transformación a resolución de 250m | Fuente                                         |
-|---------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------|------------------------------------|-------------------------------------|------------------------------------------------|
+|---------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------|-----------------------------------:|-------------------------------------|------------------------------------------------|
 | Hemerobia                                   | Grado de transformación que mostró la vegetación primaria respecto a la cobertura terrestre actual                             | Hemerobia                                    | 250                                | \-                                  | Uso de suelo y vegetación, INEGI               |
 | Zona de vida de Holdridge                   | Agrupa en 28 zonas basándose en precipitación, biotemperatura y la evapotranspiración                                          | Zona de vida de Holdridge                    | 260                                | Interpolación con Nearest Neighbor  | Portal de Geoinformación, CONABIO              |
 | Elevación (DEM)                             | Altura sobre nivel promedio del mar                                                                                            | Promedio                                     | 30                                 | Promedio                            | DEM GLO-30, Copernicus                         |
@@ -180,7 +180,7 @@ En la siguiente tabla se muestra la precisión (proporción de pixeles con la
 clase de hemerobia correcta) de cada modelo probado.
 
 |                                           | Total | Training | Testing |
-|-------------------------------------------|-------|----------|---------|
+|-------------------------------------------|------:|---------:|--------:|
 | Red bayesiana\*                           | 20.2% |          |         |
 | Red bayesiana\*\*                         | 48.0% |          |         |
 | XGBoost\*\*\*                             | 75.1% | 77.2%    | 70.2%   |
