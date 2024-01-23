@@ -92,7 +92,7 @@ variables que conecta. El modelo tiene 4 capas:
 - Intervención humana: Condiciones provocadas por el ser humano, que 
   podrían afectar la integridad ecológica.
 
-![](images/red_resumida_espanol.png){width="641"}
+![](images/red_resumida_espanol.png)
 
 El modelo estima la probabilidad de pertenecer a cada clase de la hemerobia para 
 cada uno de los pixeles. Para estimar un índice de integridad ecológica (IIE), 
@@ -150,7 +150,7 @@ mucho más exacta. El entrenamiento es iterativo, agregando en cada paso un nuev
 árbol de decisión que predice el error de los árboles anteriores. Al final, se 
 combinan las predicciones de los árboles en una predicción total.
 
-![](images/xgboost_diagram.png){width="581"}
+![](images/xgboost_diagram.png)
 
 Para entrenar el modelo se tomaron de manera aleatoria el 70% de los datos, el 
 30% restante se usó para su validación. Con este modelo de clasificación, al 
@@ -188,11 +188,11 @@ clase de hemerobia correcta) de cada modelo probado.
 | XGBoost-SLIC\*\*\*                        | 70.5% | 73.9%    | 62.5%   |
 | XGBoost-SLIC con distancia al borde\*\*\* | 70.8% | 73.8%    | 63.7%   |
 
-\*Usando INFyS en vez de radar y MAD-Mex en vez de MODIS Land Cover
+\* Usando INFyS en vez de radar y MAD-Mex en vez de MODIS Land Cover
 
-\*Usando MAD-Mex en vez de MODIS Land Cover
+\* Usando MAD-Mex en vez de MODIS Land Cover
 
-\*\*\*Ignorando fuentes descontinuadas
+\*\*\* Ignorando fuentes descontinuadas
 
 Nota: Para la red bayesiana con INFyS como variables predictoras, sólo se 
 contaba con los valores convertidos a IIE (0 a 1), por lo que para poder 
