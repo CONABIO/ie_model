@@ -38,11 +38,11 @@ Se consideraron las siguientes variables
 
 Se utilizó la paquetería `bnlearn` del lenguaje de programación R. Se entrenó la red con datos del 2017, a una resolución de 250m para todo el territorio Mexicano. El flujo de trabajo es el siguiente:
 
-0.  Para extraer las variables de la fuente Uso de suelo (MAD-Mex) utilizar el script `scripts/source_extraction/extract_mad_mex.R`.
+0.  Para extraer las variables de la fuente Uso de suelo (MAD-Mex) utilizar el script [`scripts/source_extraction/extract_mad_mex.R`](../source_extraction/extract_mad_mex.R).
 
-1.  Proyectar cada raster a la misma extensión, sistema de coordenadas (epsg) y resolución, mediante el script `scripts/source_extraction/project_raster.R`, que toma un raster de referencia que tiene la exención, epsg y resolución deseada (este se puede encontrar en la carpeta `scripts/source_extraction` con el nombre `Mask_IE2018.tif`). Para proyectar rasters con valores continuos, se utilizó el método `average` (promedio) y para valores categóricos `near` (Nearest neighbor).
+1.  Proyectar cada raster a la misma extensión, sistema de coordenadas (epsg) y resolución, mediante el script [`scripts/source_extraction/project_raster.R`](../source_extraction/project_raster.R), que toma un raster de referencia que tiene la exención, epsg y resolución deseada (este se puede encontrar en la carpeta [`scripts/source_extraction`](../source_extraction) con el nombre `Mask_IE2018.tif`). Para proyectar rasters con valores continuos, se utilizó el método `average` (promedio) y para valores categóricos `near` (Nearest neighbor).
 
-2.  Transformar los rasters a un dataframe, mediante el script `scripts/source_extraction/create_dataframe.R` , el cual recibe el directorio de la carpeta en donde se encuetran los rasters y arroja un dataframe cuyas columnas contienen los valores de cada raster y sus respectivas coordenadas geográficas.
+2.  Transformar los rasters a un dataframe, mediante el script [`scripts/source_extraction/create_dataframe.R`](../source_extraction/create_dataframe.R) , el cual recibe el directorio de la carpeta en donde se encuetran los rasters y arroja un dataframe cuyas columnas contienen los valores de cada raster y sus respectivas coordenadas geográficas.
 
 3.  Se consideró una red bayesiana discreta, por lo que las variables continuas tienen que ser convertidas a categóricas mediante el script `0. discretize_df.R`.
 
@@ -56,4 +56,4 @@ Se utilizó la paquetería `bnlearn` del lenguaje de programación R. Se entren�
 
 7.  Mediante `4. create_ie_raster.R` se puede generar el raster de integridad ecológica con el csv del paso anterior.
 
-Se puede estimar la integridad ecológica para todo año en el que se tengan datos, con la red entrenada para 2017, ésta se puede encontrar en la carpeta `model_files` con el nombre `prior.RData`. También se encuentra la matriz de adjacencia con la que se creó la red, con el nombre `ienet.csv`.
+Se puede estimar la integridad ecológica para todo año en el que se tengan datos, con la red entrenada para 2017, ésta se puede encontrar en la carpeta [`model_files`](./model_files) con el nombre `prior.RData`. También se encuentra la matriz de adjacencia con la que se creó la red, con el nombre `ienet.csv`.
