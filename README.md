@@ -191,7 +191,7 @@ clase de hemerobia correcta) de cada modelo probado.
 
 \* Usando INFyS en vez de radar y MAD-Mex en vez de MODIS Land Cover
 
-\* Usando MAD-Mex en vez de MODIS Land Cover
+\*\* Usando MAD-Mex en vez de MODIS Land Cover
 
 \*\*\* Ignorando fuentes descontinuadas
 
