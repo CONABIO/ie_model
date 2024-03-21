@@ -6,6 +6,7 @@ library(terra)
 library(sf)
 
 input_folder <- 'data/model_input/rasters'
+output_folder <- 'data/model_input/slic/2022'
 
 # Read rasters
 r_vh <- terra::rast(paste0(input_folder,'/vh.tif'))
@@ -19,4 +20,4 @@ r_rast_slic <- supercells(r_rast, k = 6000000, compactness = 1)
 
 # Save shapefile
 sf <- st_geometry(r_rast_slic)
-st_write(sf, "data/model_input/slic/slic.shp", append=FALSE)
+st_write(sf, paste0(output_folder,"/slic.shp"), append=FALSE)

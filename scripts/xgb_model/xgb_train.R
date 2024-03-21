@@ -9,21 +9,29 @@ library('hardhat')
 set.seed <- 1
 
 # ======================Input============================
-input_folder <- 'data/model_input/dataframe'
-output_folder <- 'output'
-categorical_variables <- c('land_cover',
-                           'holdridge')
-coordinate_variables <- c('x','y')
-# coordinate_variables <- c('ID') # if SLIC is used
+input_folder <- 'data/model_input/slic/2017'
+output_folder <- 'output/models/xgb slic v4'
+categorical_variables <- c('holdridge',
+                           'land_cover')
+remove_variable <- c('edge_distance')
+# coordinate_variables <- c('x','y')
+coordinate_variables <- c('ID') # if SLIC is used
 
 # ==================Processing data======================
 df <- list.files(input_folder, "csv$", full.names = TRUE) %>%
   map_dfr(read_csv)
 
 df <- df  %>% 
+  select_if(!names(.) %in% remove_variable) %>%
+  drop_na() %>% 
   mutate(across(all_of(c('hemerobia',
                          categorical_variables)), 
                 as.factor))
+
+# Add missing level in land cover
+levels(df$land_cover) <- c(levels(df$land_cover),3)
+df$land_cover <- factor(df$land_cover, 
+                        levels=1:17)
 
 # Create dummies for categorical
 df <- dummy_cols(df, select_columns = categorical_variables)
@@ -35,7 +43,7 @@ train_index <- createDataPartition(df$holdridge, p = .7, list = FALSE)
 # Save csv with coordinates and indicator 
 # (1=training data point, 0=testing data point)
 df_is_train <- df %>% 
-  select(x, y)
+  select(all_of(coordinate_variables))
 df_is_train$is_train <- 0 
 df_is_train[train_index[,1],'is_train'] <- 1
 write.csv(df_is_train, 
@@ -43,10 +51,8 @@ write.csv(df_is_train,
           row.names = FALSE)
 
 # Split in training and testing
-df_train <- df[train_index,] %>% 
-  drop_na()
-df_test <- df[-train_index,] %>% 
-  drop_na()
+df_train <- df[train_index,]
+df_test <- df[-train_index,]
 rm(df)
 rm(train_index)
 

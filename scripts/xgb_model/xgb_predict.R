@@ -9,19 +9,24 @@ library('caret')
 library('sf')
 library('fasterize')
 
+set.seed <- 1
+
 # ======================Input============================
-input_folder <- 'data/model_input/dataframe'
-output_folder <- 'output'
+input_folder <- 'data/model_input/slic/2021'
+output_file <- 'output/ie_xgb_slic/ie_xgb_slic_2021.tif'
+model_folder <- 'output/models/xgb slic v4'
 mask_file <- 'data/sources/mex_mask/Mask_IE2018.tif'
-categorical_variables <- c('land_cover',
-                           'holdridge')
+categorical_variables <- c('holdridge',
+                           'land_cover')
+remove_variables <- c('hemerobia','edge_distance')
 is_slic <- TRUE # TRUE if the model uses SLIC, FALSE if not
 
 # ==================Processing data======================
 # Read data
 df <- list.files(input_folder, "csv$", full.names = TRUE) %>%
   map_dfr(read_csv)
-xgb.fit <- xgb.load(paste0(output_folder,'/xgb v1/xgb.fit'))
+xgb.fit <- xgb.load(paste0(model_folder,'/xgb.fit'))
+variables_list <- read.csv(paste0(model_folder,'/variables_list.csv'))
 r_mask <- terra::rast(mask_file)
 if(is_slic){
   sf <- terra::vect(paste0(input_folder,'/slic.shp'))
@@ -31,7 +36,7 @@ if(is_slic){
 }
 
 df <- df %>% 
-  select_if(!names(.) %in% c('hemerobia')) %>% 
+  select_if(!names(.) %in% remove_variables) %>%
   drop_na() %>% 
   mutate(across(all_of(categorical_variables), 
                 as.factor))
@@ -39,12 +44,18 @@ df <- df %>%
 # Create dummies for categorical
 df <- dummy_cols(df, select_columns = categorical_variables)
 
+# Check if we have all the input variables
+missing_var <- setdiff(variables_list$x,names(df)) 
+missing_var
+setdiff(names(df),variables_list$x)
+if(!identical(missing_var, character(0))) {
+  df[missing_var] <- 0
+}
+
 # Transform the data set into xgb.Matrix
 xgb.matrix <- xgb.DMatrix(data=as.matrix(df %>% 
-                                         select(-c(coordinates_var,
-                                                   categorical_variables
-                                                   ))))
-
+                                         select(variables_list$x)))
+all(colnames(xgb.matrix)==variables_list$x)
 # ====================Predicting==========================
 xgb.pred <- as.data.frame(predict(xgb.fit,xgb.matrix,reshape=T))
 # Hemerobia used in training doesn't have categories 0 and 17
@@ -72,5 +83,5 @@ if(is_slic) {
 }
 
 plot(-r_pred)
-writeRaster(r_pred, paste0(output_folder,'/ie_xgb_2021.tif'), 
+writeRaster(r_pred, output_file, 
             overwrite=TRUE)
