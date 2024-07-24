@@ -12,9 +12,9 @@ library('fasterize')
 set.seed <- 1
 
 # ======================Input============================
-input_folder <- 'data/model_input/slic/2021'
-output_file <- 'output/ie_xgb_slic/ie_xgb_slic_2021.tif'
-model_folder <- 'output/models/xgb slic v4'
+input_folder <- 'data/model_input/slic/2023'
+output_file <- 'output/ie_xgb_slic/ie_xgb_slic_2023_090724.tif'
+model_folder <- 'output/models/xgb slic v5'
 mask_file <- 'data/sources/mex_mask/Mask_IE2018.tif'
 categorical_variables <- c('holdridge',
                            'land_cover')

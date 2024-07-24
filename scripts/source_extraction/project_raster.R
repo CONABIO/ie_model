@@ -3,8 +3,8 @@
 library('terra')
 library('tidyterra')
  
-input_file <- 'data/sources/sentinel/raw/2022/vv.tif'
-output_file <- 'data/sources/sentinel/processed/2022/vv.tif'
+input_file <- 'data/sources/modis/raw/2023/qlty/modis_mean.tif'
+output_file <- 'data/sources/modis/processed/2023/qlty/modis_mean.tif'
 mask_file <- 'data/sources/mex_mask/Mask_IE2018.tif'  # reference raster
 # projection_method <- 'near'  # interpolation method for categorical data
 projection_method <- 'bilinear'  # interpolation method for numerical data
@@ -12,8 +12,8 @@ projection_method <- 'bilinear'  # interpolation method for numerical data
 r_mask <- terra::rast(mask_file)
 r_raster <- terra::rast(input_file)
 
-# Only use to fill Fotosíntesis NA values with 0, otherwise comment out
-# r_raster <- ifel(is.na(r_raster), 0, r_raster)
+# Only use to fill MODIS GPP NA values with 0, otherwise comment out
+r_raster <- ifel(is.na(r_raster), 0, r_raster)
 
 # Project raster to mask's extent, epsg and resolution
 r_raster <- project(r_raster, r_mask, method=projection_method)

@@ -10,7 +10,7 @@ set.seed <- 1
 
 # ======================Input============================
 input_folder <- 'data/model_input/slic/2017'
-output_folder <- 'output/models/xgb slic v4'
+output_folder <- 'output/models/xgb slic v5'
 categorical_variables <- c('holdridge',
                            'land_cover')
 remove_variable <- c('edge_distance')
@@ -88,7 +88,7 @@ params <- list(
 xgb.fit <- xgb.train(
   params=params,
   data=xgb.train,
-  nrounds=1000,
+  nrounds=2000,
   early_stopping_rounds=10,
   watchlist=list(train=xgb.train,test=xgb.test),
   verbose=2

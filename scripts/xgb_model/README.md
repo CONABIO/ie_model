@@ -3,7 +3,7 @@
 Se desarrolló un modelo XGBoost para estimar la integridad ecológica, con los siguientes datos:
 
 | Fuente de datos                             | Variable                                      | Nombre de la variable | Link de descarga                                                                  | Referencia                                     |
-|---------------------------------------------|-----------------------------------------------|-----------------------|-----------------------------------------------------------------------------------|------------------------------------------------|
+|-------------|-------------|-------------|-------------------|-------------|
 | Hemerobia                                   | Hemerobia                                     | hemerobia             |                                                                                   | Uso de suelo y vegetación, INEGI               |
 | Zona de vida de Holdridge                   | Zona de vida de Holdridge                     | holdridge             | <http://www.conabio.gob.mx/informacion/gis/?vns=gis_root/region/fisica/zvh_mx3gw> | Portal de Geoinformación, CONABIO              |
 | Elevación (DEM)                             | Elevación promedio                            | dem90_mean            | <https://code.earthengine.google.com/b08b9d4d6689d1f30467a230d9c21ea9>            | DEM GLO-30, Copernicus                         |
@@ -20,6 +20,43 @@ Se desarrolló un modelo XGBoost para estimar la integridad ecológica, con los 
 |                                             | DE anual de banda VV                          | vv_sd                 |                                                                                   | Sentinel-1, Copernicus Sentinel data           |
 |                                             | Entropía del promedio anual de banda VV       | vv_entropy            |                                                                                   | Sentinel-1, Copernicus Sentinel data           |
 | Uso de suelo                                | Uso de suelo                                  | land_cover            | <https://code.earthengine.google.com/d8bac0a4a561e853d004d83c60e41fd3>            | MODIS Land Cover Type, NASA LP DAAC            |
+
+La Zona de vida de Holdridge fue procesada agregando diversas categorías en una sola, con el fin de reducir 31 categorías a 12, de la siguiente manera:
+
+|                 |                    |                                                        |
+|--------------|---------------|-------------------------------------------|
+| Nueva categoría | Categoría original | Descripción                                            |
+| 1               | 1                  | Desierto alvar [Templado - Lluvioso]                   |
+|                 | 2                  | Desierto alvar [Templado - Muy Lluvioso]               |
+|                 | 3                  | Desierto alvar [Cálido - Muy Lluvioso]                 |
+| 2               | 4                  | Desierto Templado Cálido [Templado - Seco]             |
+| 3               | 5                  | Desierto Subtropical [Cálido - Seco]                   |
+| 4               | 6                  | Tundra Húmeda subalpina [Templado - Lluvioso]          |
+|                 | 7                  | Tundra Húmeda alpina [Templado - Subhúmedo]            |
+| 5               | 8                  | Estepa Espinosa prermontana [Templado - Seco]          |
+|                 | 9                  | Estepa montana [Templado - Seco]                       |
+| 6               | 10                 | Matorral Desértico [Cálido - Seco]                     |
+|                 | 11                 | Matorral Desértico premontano [Cálido - Seco]          |
+|                 | 12                 | Matorral Desértico montano bajo [Templado - Seco]      |
+| 7               | 13                 | Bosque Espinoso [Cálido - Seco]                        |
+| 8               | 14                 | Bosque Muy Seco [Cálido - Subhúmedo]                   |
+| 9               | 15                 | Bosque Seco premontano [Cálido - Subhúmedo]            |
+|                 | 16                 | Bosque Seco montano bajo [Templado - Subhúmedo]        |
+| 10              | 17                 | Bosque Subhúmedo [Cálido - Lluvioso]                   |
+|                 | 18                 | Bosque Subhúmedo premontano [Cálido - Lluvioso]        |
+|                 | 19                 | Bosque Subhúmedo montano [Templado - Subhúmedo]        |
+|                 | 20                 | Bosque Subhúmedo subalpino [Templado - Seco]           |
+|                 | 21                 | Bosque Subhúmedo subalpino [Templado - Subhúmedo]      |
+| 11              | 22                 | Bosque Húmedo premontano [Cálido - Lluvioso]           |
+|                 | 23                 | Bosque Húmedo montano bajo [Templado - Lluvioso]       |
+|                 | 24                 | Bosque Húmedo montano [Templado - Lluvioso]            |
+|                 | 25                 | Bosque Húmedo subalpino [Templado - Lluvioso]          |
+| 12              | 26                 | Bosque Lluvioso [Cálido - Muy Lluvioso]                |
+|                 | 27                 | Bosque Lluvioso premontano [Cálido - Muy Lluvioso]     |
+|                 | 28                 | Bosque Lluvioso montano bajo [Cálido - Muy Lluvioso]   |
+|                 | 29                 | Bosque Lluvioso montano bajo [Templado - Muy Lluvioso] |
+|                 | 30                 | Bosque Lluvioso montano [Cálido - Muy Lluvioso]        |
+|                 | 31                 | Bosque Lluvioso montano [Templado - Muy Lluvioso]      |
 
 ## Implementación
 
