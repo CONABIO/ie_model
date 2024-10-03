@@ -4,7 +4,7 @@ El objetivo es estimar la integridad ecológica (IE) en todo el territorio Mexic
 
 ## Datos
 
-La integridad ecológica no puede ser directamente observada, por lo que se utilizó la hemerobia como *proxy*, suponiendo que puede ser considerada como una medición de la integridad. Ésta representa el grado de transformación que mostró la vegetación primaria respecto a la cobertura terrestre actual, siendo una variable categórica ordinal, donde 0 es el estado intacto y 18 el de mayor degradación.
+La integridad ecológica no puede ser directamente observada, por lo que se utilizó la hemerobia como *proxy*, suponiendo que puede ser considerada como una medición de la integridad. Ésta representa el grado de transformación que mostró la vegetación primaria respecto a la cobertura terrestre actual, siendo una variable categórica ordinal, donde 0 es el estado intacto y 18 el de mayor degradación (Si se quere conocer más detalles ver [`scripts/hemerobia`](./scripts/hemerobia)).
 
 ![](images/hemerobia.png)
 
@@ -13,7 +13,7 @@ Para modelar la hemerobia se tomaron en cuenta variables relacionadas a la integ
 El ráster de cada una de las variables fue transformado a una misma resolución de 250m x 250m.
 
 | Fuente de datos                             | Definición                                                                                                                     | Variables                                    |           Resolución de origen (m) | Transformación a resolución de 250m | Fuente                                         |
-|---------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------|-----------------------------------:|-------------------------------------|------------------------------------------------|
+|-----------|-------------------|-----------|----------:|-----------|-----------|
 | Hemerobia                                   | Grado de transformación que mostró la vegetación primaria respecto a la cobertura terrestre actual                             | Hemerobia                                    |                                250 | \-                                  | Uso de suelo y vegetación, INEGI               |
 | Zona de vida de Holdridge                   | Agrupa en 28 zonas basándose en precipitación, biotemperatura y la evapotranspiración                                          | Zona de vida de Holdridge                    |                                260 | Interpolación con Nearest Neighbor  | Portal de Geoinformación, CONABIO              |
 | Elevación (DEM)                             | Altura sobre nivel promedio del mar                                                                                            | Promedio                                     |                                 30 | Promedio                            | DEM GLO-30, Copernicus                         |
