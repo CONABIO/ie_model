@@ -4,7 +4,7 @@ El objetivo es estimar la integridad ecológica (IE) en todo el territorio Mexic
 
 ## Datos
 
-La integridad ecológica no puede ser directamente observada, por lo que se utilizó la hemerobia como *proxy*, suponiendo que puede ser considerada como una medición de la integridad. Ésta representa el grado de transformación que mostró la vegetación primaria respecto a la cobertura terrestre actual, siendo una variable categórica ordinal, donde 0 es el estado intacto y 18 el de mayor degradación (Si se quere conocer más detalles ver [`scripts/hemerobia`](./scripts/hemerobia)).
+La integridad ecológica no puede ser directamente observada, por lo que se utilizó la hemerobia como *proxy*, suponiendo que puede ser considerada como una medición de la integridad. Ésta representa el grado de transformación que mostró la vegetación primaria respecto a la cobertura terrestre actual, siendo una variable categórica ordinal, donde 0 es el estado intacto y 18 el de mayor degradación (ver [`scripts/hemerobia`](./scripts/hemerobia)).
 
 ![](images/hemerobia.png)
 
