@@ -3,10 +3,10 @@
 library('tidyverse')
 library('terra')
 
-r_ei <- terra::rast('output/ie_xgb_slic/ie_xgb_slic_2017_v10.tif')
-r_hemerobia <- terra::rast('data/sources/hemerobia/processed/2017/hemerobia.tif')
+r_ei <- terra::rast('output/ie_xgb_slic/march/ie_xgb_slic_2017_march.tif')
+r_hemerobia <- terra::rast('output/models/xgb slic v7/hemerobia_slic.tif')
 
-df_is_train <- read_csv('output/models/xgb slic v4/is_train.csv') # Indicator of training
+df_is_train <- read_csv('output/models/xgb slic v7/is_train.csv') # Indicator of training
 slic_file <- 'data/model_input/slic/2017/slic.shp'
 is_slic <- TRUE
 
@@ -44,10 +44,10 @@ df_test <- df %>%
   filter(is_train==0)
 
 # Estimate overall, training and testing accuracy
-mean(df$prediction==df$hemerobia_raw)
+mean(df$prediction==df$hemerobia)
 mean(df_train$prediction==df_train$hemerobia)
 mean(df_test$prediction==df_test$hemerobia)
-confusionMatrix(df_test$hemerobia, as.factor(df_test$prediction))
+confusionMatrix(as.factor(df_test$hemerobia), as.factor(df_test$prediction))
 
 # Estimate accuracy and area covered stratified by holdridge
 df_accuracy_train <- df_train %>% 

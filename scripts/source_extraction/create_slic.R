@@ -6,7 +6,7 @@ library(terra)
 library(sf)
 
 input_folder <- 'data/model_input/rasters'
-output_folder <- 'data/model_input/slic/2023'
+output_folder <- 'data/model_input/slic/2018'
 
 # Read rasters
 r_vh <- terra::rast(paste0(input_folder,'/vh.tif'))

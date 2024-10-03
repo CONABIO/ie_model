@@ -6,7 +6,7 @@ library('collapse')
 library('sf')
 
 input_folder <- 'data/model_input/rasters'
-slic_folder <- 'data/model_input/slic/2023'
+slic_folder <- 'data/model_input/slic/2018'
 categorical_variables <- c(
                            # "hemerobia",
                            "holdridge",

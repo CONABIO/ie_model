@@ -12,13 +12,16 @@ library('fasterize')
 set.seed <- 1
 
 # ======================Input============================
-input_folder <- 'data/model_input/slic/2023'
-output_file <- 'output/ie_xgb_slic/ie_xgb_slic_2023_090724.tif'
-model_folder <- 'output/models/xgb slic v5'
+input_folder <- 'data/model_input/slic/2018'
+output_files <- c('ie' = 'output/ie_xgb_slic/march/ie_xgb_slic_2018_march.tif',
+                  'probability' = 'output/ie_xgb_slic/march/ie_xgb_slic_2018_march_prob.tif')
+model_folder <- 'output/models/xgb slic v7'
 mask_file <- 'data/sources/mex_mask/Mask_IE2018.tif'
 categorical_variables <- c('holdridge',
                            'land_cover')
-remove_variables <- c('hemerobia','edge_distance')
+# remove_variables <- c('hemerobia','edge_distance')
+remove_variables <- c('hemerobia')
+
 is_slic <- TRUE # TRUE if the model uses SLIC, FALSE if not
 
 # ==================Processing data======================
@@ -61,7 +64,7 @@ xgb.pred <- as.data.frame(predict(xgb.fit,xgb.matrix,reshape=T))
 # Hemerobia used in training doesn't have categories 0 and 17
 colnames(xgb.pred) <- c(seq(1,16,by=1),18)
 df$prediction <- as.numeric(colnames(xgb.pred)[apply(xgb.pred,1,which.max)])
-
+df$prob <- apply(xgb.pred, 1, max)
 # =================Creating raster========================
 if(is_slic) {
   # Add missing IDs
@@ -75,13 +78,25 @@ if(is_slic) {
   sf$prediction <- as.numeric(df$prediction)
   r_pred <- rasterize(sf, r_mask, field="prediction")
   
+  sf$prob <- as.numeric(df$prob)
+  r_prob <- rasterize(sf, r_mask, field="prob")
+  
 } else {
   # Create raster
   r_pred <- terra::rast(df %>% 
                           select(x, y, prediction))
   crs(r_pred) <- crs(r_mask)
+  
+  r_prob <- terra::rast(df %>% 
+                          select(x, y, prob))
+  crs(r_prob) <- crs(r_mask)
 }
 
 plot(-r_pred)
-writeRaster(r_pred, output_file, 
+plot(r_prob)
+writeRaster(r_pred, 
+            output_files['ie'], 
+            overwrite=TRUE)
+writeRaster(r_prob, 
+            output_files['probability'], 
             overwrite=TRUE)
