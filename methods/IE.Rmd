@@ -2,15 +2,10 @@
 title: "Integridad Ecosistémica"
 output: html_document
 ---
-```{r}
-```
-
-
-```{r}
-```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+data_folder <- 'methods/data'
 ```
 
 La Integridad Ecosistémica (IE) describe la salud de un ecosistema, se refiere a que tan intacto, completo o funcional está respecto a su estado natural (WCS 2019). La integridad más alta la alcanzan las áreas no afectadas de manera significativa por actividades humanas, las cuales son fundamentales para la conservación de la biodiversidad, pues es en ecosistemas con alta integridad que las especies tienen menor riesgo de extinción (DiMarco et al. 2019). Además, estas áreas contribuyen en mayor medida, respecto a áreas degradadas, a los servicios ecológicos, como la absorción de CO2, el suministro de agua y protección de riesgos causados por el cambio climático (Watson et al. 2018; Martin and Watson 2016). Por lo cual, es de gran importancia, medir la IE para preservar áreas con alta integridad y rehabilitar áreas de baja integridad.
@@ -24,10 +19,10 @@ La IE es un concepto complejo, por lo que para su medición se puede usar una me
 
 |  | IIE (19 categorías)                             | IEE (4 Categorías)        | Descripción                                                                                                                                                                   |
 |--------------|---------------------------------------|---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 0            | Estasis                               | Integridad muy alta | No hay cambio de vegetación de estado primario                                                                                                                                |
-| 1            | Pseudoestasis inferior                | Integridad muy alta | No hay cambio de estado primario, si hay cambio de tipo de vegetación pero dentro de la misma ecovariante                                                                     |
-| 2            | Pseudoestasis media                   | Integridad muy alta | No hay cambio de estado primario, si hay cambio de tipo de vegetación a otra ecovariante pero el estrato dominante ascendiendo en porte (ej. matorral a bosque)               |
-| 3            | Pseudoestasis superior                | Integridad muy alta | No hay cambio de estado primario, si hay cambio de tipo de vegetación a otra ecovariante pero manteniéndose el porte del estrato dominante (ej. boque de encino a selva baja) |
+| 0            | Estasis                               | Integridad alta | No hay cambio de vegetación de estado primario                                                                                                                                |
+| 1            | Pseudoestasis inferior                | Integridad alta | No hay cambio de estado primario, si hay cambio de tipo de vegetación pero dentro de la misma ecovariante                                                                     |
+| 2            | Pseudoestasis media                   | Integridad alta | No hay cambio de estado primario, si hay cambio de tipo de vegetación a otra ecovariante pero el estrato dominante ascendiendo en porte (ej. matorral a bosque)               |
+| 3            | Pseudoestasis superior                | Integridad alta | No hay cambio de estado primario, si hay cambio de tipo de vegetación a otra ecovariante pero manteniéndose el porte del estrato dominante (ej. boque de encino a selva baja) |
 | 4            | Degradación muy somera                | Integridad media    | No hay cambio de estado primario, si hay cambio de tipo de vegetación a otra ecovariante pero el estrato dominante desceinde en porte (ej. matorral a pastizal o herbazal)    |
 | 5            | Degradación somera inferior           | Integridad media    | Cambio de bosques o selvas primarias a vegetación secundaria arbórea                                                                                                          |
 | 6            | Degradación somera superior           | Integridad media    | Cambio de cualquier tipo de vegetación primaria a bosque inducido o plantación forestal                                                                                       |
@@ -79,7 +74,7 @@ Para relacionar las variables predictoras con el índice de IE, se entrenó un m
 
 Se puede predecir el índice de IE para el periodo y territorio deseado utilizando el modelo entrenado con datos del 2017. 
 
-![](/Users/kasanchez/Documents/ie_model/images/modelo_flujo.png){width=70%}
+![](/Users/kasanchez/Documents/ie_model/methods/data/modelo_flujo.png){width=70%}
 
 ## Integridad Ecosistémica en México
 
@@ -90,31 +85,41 @@ library(ggplot2)
 library(terra)
 library(tidyterra)
 
-ie <- rast('/Users/kasanchez/Documents/ie_model/output/ie_xgb_slic/march_sv/ie_xgb_slic_2023_march_sv.tif')
+ie_2023 <- rast(paste0(data_folder,'/ie_2023_masked.tif'))
+ie_2020 <- rast(paste0(data_folder,'/ie_2020.tif'))
 
 ggplot() +
-  geom_spatraster(data = ie) +
+  geom_spatraster(data = ie_2020) +
+  scale_fill_gradient2(name="IIE 2020",
+                       low = "darkgreen",
+                       mid = "beige",
+                       high="red",
+                       midpoint = 9.0,
+                       na.value="transparent") +
+  theme_void()
+
+ggplot() +
+  geom_spatraster(data = ie_2023) +
   scale_fill_gradient2(name="IIE 2023",
                        low = "darkgreen",
                        mid = "beige",
                        high="red",
                        midpoint = 9.0,
-                       na.value="transparent")
+                       na.value="transparent") +
+  theme_void()
 ```
 
 ```{r ie_bar_chart, echo=FALSE, message=FALSE}
-library(ggplot2)
-
-df_plot <- read.csv('/Users/kasanchez/Documents/ie_model/data/other/ie_by_zonas_pct.csv')
+df_plot <- read.csv(paste0(data_folder,'/ie_ecorregiones_pct.csv'))
 
 
 df_plot$ie <- factor(df_plot$ie, levels=c('Integridad muy baja',
                                           'Integridad baja',
                                           'Integridad media',
-                                          'Integridad muy alta'))
-  
+                                          'Integridad alta'))
+
 ggplot(df_plot,
-       aes(x = factor(zonas_reducidas), fill = ie, y = pct)) + 
+       aes(x = zonas_reducidas, fill = ie, y = pct)) + 
   geom_col(position = 'fill') +
   labs(fill = 'IIE', x = '', y='%') +
   scale_y_continuous(limits = c(0,1)) +
@@ -123,15 +128,11 @@ ggplot(df_plot,
   theme_classic()
 ```
 
-```{r ie_diff, echo=FALSE, message=FALSE}
-library(ggplot2)
-library(terra)
-library(tidyterra)
-
-r_diff_cat <- rast('/Users/kasanchez/Documents/ie_model/output/ie_xgb_slic/march_sv/ie_diff_2023_2018.tif')
+```{r ie_diff, echo=FALSE, message=FALSE, results = 'hide'}
+r_diff_cat <- rast(paste0(data_folder,'/ie_cambio_2023_2020_masked.tif'))
 
 ggplot() +
-  geom_spatraster(data = r_diff_cat) +
+  geom_spatraster(data = as.factor(r_diff_cat)) + 
   scale_fill_manual(values=c("red",
                              "orange",
                              "beige",
@@ -145,7 +146,8 @@ ggplot() +
            "No hay cambio",
            "Cambio positivo leve",
            "Cambio positivo fuerte")
-  )
+  ) +
+  theme_void()
 ```
 
 ## Referencias

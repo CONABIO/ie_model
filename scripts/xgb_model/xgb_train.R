@@ -10,7 +10,7 @@ set.seed <- 1
 
 # ======================Input============================
 input_folder <- 'data/model_input/slic/2017'
-output_folder <- 'output/models/xgb slic v8'
+output_folder <- 'output/models/xgb slic v11'
 categorical_variables <- c('holdridge',
                            'land_cover')
 # remove_variable <- c('edge_distance')

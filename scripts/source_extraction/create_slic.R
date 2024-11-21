@@ -6,7 +6,7 @@ library(terra)
 library(sf)
 
 input_folder <- 'data/model_input/rasters'
-output_folder <- 'data/model_input/slic/2018'
+output_folder <- 'data/model_input/slic/2017'
 
 # Read rasters
 r_vh <- terra::rast(paste0(input_folder,'/vh.tif'))
@@ -16,7 +16,7 @@ r_modis_sd <- terra::rast(paste0(input_folder,'/modis_sd.tif'))
 r_rast <- c(r_vh, r_vv, r_modis_mean, r_modis_sd)
 
 # Run SLIC
-r_rast_slic <- supercells(r_rast, k = 6000000, compactness = 1)
+r_rast_slic <- supercells(r_rast, k = 8e+06, compactness = 1)
 
 # Save shapefile
 sf <- st_geometry(r_rast_slic)
