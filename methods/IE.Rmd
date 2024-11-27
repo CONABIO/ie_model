@@ -28,20 +28,21 @@ integridad.
 
 Con el fin de estimar la IE para distintos periodos y para todo el territorio 
 Mexicano, se ajustó un modelo XGBoost, el cual mediante ciertas variables 
-predice un índice de IE. Para esto es necesario definir los valores de IE que 
-se tenga en algún momento para después entrenar este modelo con estos valores 
-y el conjunto de variables predictoras a un tiempo dado de tal forma que se 
-pueda crear la relación de los valores IE con las variables predictoras. Al 
-hacer tendremos un modelo el cual a partir de los valores de las variables 
-predictoras se obtiene el valor de la IE. Es importante notar que una mejor 
-modelación va a depender de la elección que se haga de los parámetros del modelo 
-XGBoost y de lo relevante de las variables predictoras para el valor de la IE.
+predice un Índice de IE (IEE). Para esto, es necesario definir los valores del 
+IIE que se tengan a un tiempo dado, para después entrenar el modelo con estos 
+y con el conjunto de variables predictoras, de tal forma que se 
+pueda crear la relación de los valores del IIE con las variables. Al 
+hacer esto, tendremos un modelo que a partir de los valores de las variables 
+predictoras de cualquier periodo, estima el valor del IIE. Es importante notar 
+que una mejor modelación va a depender de la elección que se haga de los 
+parámetros del modelo XGBoost y de lo relevante de las variables predictoras 
+para el valor del IIE.
 
 ### Índice de Integridad Ecosistémica
 
 La IE es un concepto complejo, por lo que para su medición usamos una medida 
 _proxy_ que refleje el impacto humano en la naturaleza [@hansen2021toward]. En 
-este caso se definió un índice de acuerdo al grado de transformación de la 
+este caso se definió un IIE de acuerdo al grado de transformación de la 
 vegetación natural de los ecosistemas, respecto a su situación actual. Para su 
 construcción se comparó la _vegetación primaria_ (vegetación antes de los 
 grandes cambios antropogénicos) [@inegi2003conjunto], con el mapa de uso de suelo y 
@@ -49,7 +50,7 @@ vegetación más reciente [@inegi2003VI]. Se asignó un valor al índice de acue
 a la severidad del cambio, por ejemplo, si pasa de bosque de coníferas a 
 agricultura de riego, se asigna un valor 13, que corresponde a una 
 _degradación severa media superior_, o bien si sólo dividimos al índice en 
-cuatro categorías corresponde a _integridad baja_. De esta forma el Índice de IE 
+cuatro categorías corresponde a _integridad baja_. De esta forma el IIE 
 es una medida que refleja el impacto de la intervención humana en la vegetación 
 de los ecosistemas.
 
@@ -77,13 +78,13 @@ de los ecosistemas.
 
 ### Variables Predictoras
 
-Las variables utilizadas para la predicción del índice de IE provienen de datos 
+Las variables utilizadas para la predicción del IIE provienen de datos 
 de percepción remota (satelitales), estos tienen como ventaja que cubren todo el 
 territorio Mexicano, están disponibles para distintos periodos, son de uso 
 público, y se puede acceder a ellos casi en tiempo real, por lo que permiten una 
-estimación de la IE actual e histórica. 
+estimación del IIE actual e histórico. 
 
-Para estimar la IE, debemos considerar que México cuenta con distintos tipos de 
+Para estimar el IIE, debemos considerar que México cuenta con distintos tipos de 
 ecosistemas con diversas condiciones bioclimáticas, por lo que se incluyó como 
 variable predictora la clasificación propuestas por Holdridge, que utiliza la 
 precipitación, la biotemperatura  (temperatura promedio en la que se produce el 
@@ -114,18 +115,17 @@ actividad humana mayor será la integridad.
 
 | Fuente de datos                             | Definición                                                                                                                     | Variables                                    |           Resolución de origen (m) | Transformación a resolución de 250m | Fuente                                         |
 |-----------|-------------------|-----------|----------:|-----------|-----------|
-| Hemerobia                                   | Grado de transformación que mostró la vegetación primaria respecto a la cobertura terrestre actual                             | Hemerobia                                    |                                250 | \-                                  | Uso de suelo y vegetación, INEGI               |
 | Zona de vida de Holdridge                   | Agrupa en 28 zonas basándose en precipitación, biotemperatura y la evapotranspiración                                          | Zona de vida de Holdridge                    |                                260 | Interpolación con Nearest Neighbor  | Portal de Geoinformación, CONABIO              |
 | Elevación (DEM)                             | Altura sobre nivel promedio del mar                                                                                            | Promedio                                     |                                 30 | Promedio                            | DEM GLO-30, Copernicus                         |
 |                                             |                                                                                                                                | Mínimo                                       |                                    | Mínimo                              |                                                |
 |                                             |                                                                                                                                | Máximo                                       |                                    | Máximo                              |                                                |
-| Productividad primaria bruta | Cantidad total de compuestos de carbono producidos por la fotosíntesis                                                         | Promedio de marzo                               |                                500 | Interpolación bilinear              | Terra Gross Primary Productivity, NASA LP DAAC |
-|                                             |                                                                                                                                | DE de marzo                                     |                                    |                                     |                                                 |                                    |                                     |                                                |
-| Radar de apertura sintética en la banda C | Coeficiente de retrodispersión que depende de la geometría del terreno y sus características electromagnéticas                 | Promedio de marzo de banda VH y VV              |                                 40 | Promedio                            | Sentinel-1, Copernicus Sentinel data           |
-|                                             |                                                                                                                                | DE de marzo de banda VH y VV                    |                                    |                                     |                                                |
-|                                             |                                                                                                                                | Entropía del promedio de marzo de banda VV y VH |                                    |                                     |                                                |
-| Covertura del suelo             | Estimación basada en imágenes satelitales del tipo de uso de suelo, que incluye cultivos, asentamientos urbanos, bosques, etc. | Uso de suelo                                 |                                500 | Interpolación con Nearest Neighbor  | MODIS Land Cover Type, NASA LP DAAC            |
-| Distancia al borde                          | Distancia, en metros, de cada pixel al borde del parche                                                                        | Distancia al borde                           |                                250 | \-                                  |                                                |
+| Productividad primaria bruta | Energía total fijada por fotosíntesis por las plantas                                                         | Promedio                               |                                500 | Interpolación bilinear              | Terra Gross Primary Productivity, NASA LP DAAC |
+|                                             |                                                                                                                                | Desviación estándar                                     |                                    |                                     |                                                 |                                    |                                     |                                                |
+| Radar de apertura sintética en la banda C | Coeficiente de retrodispersión que depende de la geometría del terreno y sus características electromagnéticas                 | Promedio de banda VH y VV              |                                 40 | Promedio                            | Sentinel-1, Copernicus Sentinel data           |
+|                                             |                                                                                                                                | Desviación estándar de banda VH y VV                    |                                    |                                     |                                                |
+|                                             |                                                                                                                                | Métricas de textura (entropía y promedio) de banda VH y VV |                                    |                                     |                                                |
+| Cobertura del suelo             | Estimación basada en imágenes satelitales del tipo de uso de suelo, que incluye cultivos, asentamientos urbanos, bosques, etc. | Uso de suelo                                 |                                500 | Interpolación con Nearest Neighbor  | MODIS Land Cover Type, NASA LP DAAC            |
+| Distancia al borde                          | Distancia, en metros, de cada pixel al borde del parche                                                                        | Distancia al borde                           |                                250 | \-                                  |  MODIS Land Cover Type, NASA LP DAAC. Red Nacional de Caminos, INEGI                                              |
 
 ### Modelaje
 
@@ -133,7 +133,7 @@ Se recolectaron los datos para el año 2017 y se estimaron las variables
 derivadas de estos, si la fuente de datos está ligada a una periodicidad, por 
 ejemplo la productividad primaria bruta, se tomaron los datos del mes de marzo, 
 con el fin de que estos tengan menor variabilidad. Los mapas de cada una de las 
-variables predictoras, así como el del índice de IE, fueron proyectados a la 
+variables predictoras, así como el del IIE, fueron proyectados a la 
 misma extensión, sistema de coordenadas (EPSG) y resolución, obteniendo mapas 
 con pixeles de 250m x 250m.
 
@@ -142,17 +142,16 @@ su ubicación geográfica, se aplicó el algoritmo SLIC, que crea agrupaciones d
 pixeles, llamadas _superpixeles_, con características similares de acuerdo a las 
 variables deseadas. En este caso, se utilizaron aquellas que representan la 
 estructura de la vegetación, es decir datos de radar y de fotosíntesis, en 
-específico las bandas VV y VH, así como la productividad primaria bruta media y 
-su desviación estándar. Se transformó cada uno de los mapas de variables 
-predictoras y el del índice de IE a estos _superpixeles_.
+específico el promedio de las bandas VV y VH, así como la productividad primaria
+bruta media y su desviación estándar. Se transformó cada uno de los mapas de 
+variables predictoras y el del IIE a estos _superpixeles_.
 
-Para relacionar las variables predictoras con el índice de IE, se entrenó un 
-modelo de aprendizaje de máquina llamado XGBoost. Con este modelo se obtiene la 
-probabilidad de que cada _superpixel_ pertenezca a cada clase del índice de IE, 
-asignando el valor con la mayor probabilidad.
-
-Se puede predecir el índice de IE para el periodo y territorio deseado 
-utilizando el modelo entrenado con datos del 2017. 
+Para relacionar las variables predictoras con el IIE, se entrenó un 
+modelo XGBoost. Con este modelo se obtiene la probabilidad de que cada 
+_superpixel_ pertenezca a cada clase del IIE, asignando el valor con la mayor 
+probabilidad. Se puede predecir el IIE para el periodo y territorio deseado 
+utilizando el modelo entrenado con datos del 2017, mediante las variables 
+predictoras. 
 
 ![](./data/modelo_flujo.png){width=70%}
 
@@ -214,9 +213,9 @@ r_diff_cat <- rast(paste0(data_folder,'/ie_cambio_2023_2020_masked.tif'))
 ggplot() +
   geom_spatraster(data = as.factor(r_diff_cat)) + 
   scale_fill_manual(values=c("red",
-                             "orange",
+                             "darkgoldenrod1",
                              "beige",
-                             "green",
+                             "darkolivegreen3",
                              "darkgreen"),
   na.value="transparent",
   name = "",
