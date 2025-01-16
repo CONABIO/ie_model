@@ -80,7 +80,7 @@ el IIE es una medida que refleja el impacto de la intervención humana en
 la vegetación de los ecosistemas.
 
 |     | IIE (19 categorías)                   | IIE (4 Categorías)  | Descripción                                                                                                                                                                   |
-|-------------|-------------|-------------|-----------------------------------|
+|---------------|---------------|---------------|--------------------------|
 | 0   | Estasis                               | Integridad alta     | No hay cambio de vegetación de estado primario                                                                                                                                |
 | 1   | Pseudoestasis inferior                | Integridad alta     | No hay cambio de estado primario, si hay cambio de tipo de vegetación pero dentro de la misma ecovariante                                                                     |
 | 2   | Pseudoestasis media                   | Integridad alta     | No hay cambio de estado primario, si hay cambio de tipo de vegetación a otra ecovariante pero el estrato dominante ascendiendo en porte (ej. matorral a bosque)               |
@@ -203,7 +203,7 @@ Se acudió al personal que labora dentro de las áreas naturales
 protegidas (AP), quienes cuentan con conocimiento del estado del
 territorio conservado. Se elaboró un cuestionario, donde cada uno de los
 expertos marcó sobre un mapa el estado en el que considera se encuentra
-el territorio del que el o ella tenga conocimiento, esto se realizó
+el territorio del que él o ella tenga conocimiento, esto se realizó
 eligiendo una de cuatro categorías en celdas de 1 km x 1 km de una
 rejilla sobre el mapa. Las categorías son:
 
@@ -242,9 +242,29 @@ respuesta de los expertos, se eligieron las celdas que tuvieron
 consenso. Se considera que existió consenso si más de la mitad (la mitad
 más uno, siempre y cuando haya respondido más de un experto)
 coincidieron en la misma respuesta para una celda (excluyendo a los
-expertos que no asignaron respuesta a esa celda). Po último, se calculó
-en qué proporción coincide las respuestas (con consenso) de los expertos
-y el valor del IIE de 2023.
+expertos que no asignaron respuesta a esa celda). Si sólo un experto
+respondió en alguna AP, ésta será considerada como si hubiera consenso.
+
+Se calculó en qué proporción coincide las respuestas (con consenso) de
+los expertos y el valor del IIE de 2023.
+
+El 29.3% no consideraron que existan zonas con Integridad Alta dentro de
+la AP en la que laboran, lo cual es poco probable, ya que son zonas
+protegidas, esto podría deberse al que el cuestionario implica un grado
+de subjetividad en las respuestas de cada experto. Otra manera de
+comparar el IIE 2023, considerando esta subjetividad, es comparando el
+orden en el que evaluan las áreas, es decir que se cumpla que un área es
+más/menos degradada que otra. Para ello seguimos los siguientes pasos
+por cada AP:
+
+1.  Dividir la AP en áreas de acuerdo al valor con consenso.
+
+2.  Ordenar estas áreas.
+
+3.  Calcular la mediana del IIE 2023 por área.
+
+4.  Comparar que el valor de IIE 2023 de cada pixel sea menor a la
+    mediana del área siguiente y mayor a la de la anterior.
 
 #### **Validación mediante datos de Fauna**
 
@@ -280,32 +300,54 @@ representatividad de en al menos 3 de los 7 ecosistemas del país.
 
 #### **Validación de expertos**
 
-En promedio en todas las AP, el 37.4% (DE=28.7%) de celdas fueron
-validadas, es decir, los expertos asignaron el mismo valor que el IIE.
-Las AP con mayor coincidencia, fueron la Laguna de Zempoala, Insurgentes
-Miguel Hidalgo y Costilla, y El Veladero. Y las AP con menor
-coincidencia entre el consenso de expertos y el IIE fueron Grutas de
-Cacahuamilpa, El Chico y Mariposa Monarca.
+Se realizó el cuestionario a 41 expertos, abarcando 19 AP, con un
+promedio de 2.2 (DE=1.1) expertos por cada AP.
 
-Al respecto, uno de los resultados que sobresalen de los patrones
-observados en los mapas de las respuestas con consenso de expertos
-versus los mapas del IIE 2023 es que, a pesar del alto impacto humano en
-el centro del país, el 90% de las AP de la región CoSMoS presenta
-pixeles con clase de Integridad Alta del IIE 2023, contrastando con el
-58 % de las AP en los mapas de expertos.
+El 57.6% de las celdas donde hubo dos o más respuestas tuvieron
+consenso. El mapa de consenso, conformado por las celdas que tuvieron
+consenso y por aquellas que pertenecen a una AP donde sólo participó un
+experto, es el 69.7% del área total que abarcó el cuestionario y
+corresponde al 0.33% del total del territorio que abarca el IIE.
 
-Las únicas AP que no tuvieron clase de IE Alta en el IIE 2023, ni en el
-consenso fueron el 10.5% de las AP (El Veladero y Grutas de
-Cacahuamilpa). Si los expertos están en lo correcto parecería que el
-modelo de IIE tiende a sobrestimar la Integridad de los Ecosistemas y
-entonces la condición es menor a la estimada hasta el momento.
+Del total de celdas con consenso, el 30.25% coinciden con el valor del
+IIE. De las que no coinciden, en el 91.0% los expertos asignaron mayor
+degradación de lq que se predice con el IIE. Al respecto, uno de los
+resultados que sobresalen es que, a pesar del alto impacto humano en el
+centro del país, el 57.6% del IIE 2023 tiene valores de Integridad Alta
+en el territorio que abarca el mapa de consenso, en contraste, sólo el
+11.4% presentó Integridad Alta de acuerdo a los expertos.
+
+Cuando dividimos por AP, se tuvo una coincidencia promedio de 36.0%
+(DE=26.9%). Las AP con mayor coincidencia entre el consenso de expertos
+y el IIE 2023, fueron la Laguna de Zempoala (100%), Cumbres de Ajusco
+(68.9%), Insurgentes Miguel Hidalgo y Costilla (66.7%), y El Veladero
+(55.6%). Y las AP con menor coincidencia fueron Grutas de Cacahuamilpa,
+Desierto de los Leones y El Chico, donde no hubo coincidencias y
+Mariposa Monarca con 3.5%.
+
+En cuanto a la comparación del orden de las categorías, el 39.33% del
+total coinciden en el orden del IIE 2023 y las respuestas con consenso
+de expertos. Considerando por AP, en promedio tuvieron una coincidencia
+en el orden del 53.3% (DE=24.2%), siendo las de mayor coincidencia
+Barranca de Metztitlán (94.7%), La Montaña Malinche o Matlalcuéyatl
+(88.7%), El Veladero (78.6%) y Lagunas de Zempoala (75.2%). Las de menor
+coincidencia fueron Sierra Gorda de Guanajuato (12.8%), Sierra de
+Huautla (18.7%), Mariposa Monarca (22.5%) e Iztaccíhuatl-Popocatépetl
+(35.2%).
+
+Si los expertos están en lo correcto parecería que el modelo de IIE
+tiende a sobrestimar la Integridad de los Ecosistemas y entonces la
+condición es menor a la estimada hasta el momento.
 
 #### **Validación mediante datos de Fauna**
 
 Los datos de SiPeCaM, procesados hasta el momento, muestran que las
 especies *Leopardus pardalis* y *Panthera onca* se encuentran con mayor
-frecuencia en zonas con Integridad Alta de manera estadísticamente
-significativa.
+frecuencia, de manera estadísticamente significativa, en zonas donde el
+IIE 2023 tiene un valor de Integridad Alta, lo cual es válido para estas
+especies. Por otra parte, aunque no existe significancia estadísitica
+hay evidencia de que el Procyon lotor se observó en áreas donde IIE 2023
+muestra degradación, lo cual se esperaría de esta especie.
 
 ![](data/sipecam_diff.png)
 
