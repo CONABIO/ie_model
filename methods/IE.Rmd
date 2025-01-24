@@ -2,9 +2,9 @@
 title: "Integridad Ecosistémica"
 bibliography: references.bib
 output:
-  word_document: default
-  html_document: default
   pdf_document: default
+  html_document: default
+  word_document: default
 editor_options:
   markdown:
     wrap: 72
@@ -80,7 +80,7 @@ el IIE es una medida que refleja el impacto de la intervención humana en
 la vegetación de los ecosistemas.
 
 |     | IIE (19 categorías)                   | IIE (4 Categorías)  | Descripción                                                                                                                                                                   |
-|---------------|---------------|---------------|--------------------------|
+|-----------------|-----------------|-----------------|--------------------|
 | 0   | Estasis                               | Integridad alta     | No hay cambio de vegetación de estado primario                                                                                                                                |
 | 1   | Pseudoestasis inferior                | Integridad alta     | No hay cambio de estado primario, si hay cambio de tipo de vegetación pero dentro de la misma ecovariante                                                                     |
 | 2   | Pseudoestasis media                   | Integridad alta     | No hay cambio de estado primario, si hay cambio de tipo de vegetación a otra ecovariante pero el estrato dominante ascendiendo en porte (ej. matorral a bosque)               |
@@ -245,26 +245,37 @@ coincidieron en la misma respuesta para una celda (excluyendo a los
 expertos que no asignaron respuesta a esa celda). Si sólo un experto
 respondió en alguna AP, ésta será considerada como si hubiera consenso.
 
-Se calculó en qué proporción coincide las respuestas (con consenso) de
-los expertos y el valor del IIE de 2023.
+Se calculó en qué proporción coincide las respuestas con consenso de los
+expertos y el valor del IIE de 2023. Otra manera de comparar estos
+valores, es fijándonos únicamente en el orden que asignaron los
+expertos, por ejemplo, si éstos opinaron que el área B de la AP tiene
+mayor integridad que un área A y menor integridad que un área C, es
+decir, $IE_{Expertos}(A)<IE_{Expertos}(B)<IE_{Expertos}(C)$, entonces el
+IIE 2023 debería mantener este mismo orden, para lo cual, comparamos el
+valor del IIE 2023 de un pixel en B, contra la mediana del IIE 2023 en
+el área A y B. Si está bien ordenado debe cumplir
+$mediana(IIE_{2023})(A)<IIE_{2023}(pixel)<=mediana(IIE_{2023})(C)$.
 
-El 29.3% no consideraron que existan zonas con Integridad Alta dentro de
-la AP en la que laboran, lo cual es poco probable, ya que son zonas
-protegidas, esto podría deberse al que el cuestionario implica un grado
-de subjetividad en las respuestas de cada experto. Otra manera de
-comparar el IIE 2023, considerando esta subjetividad, es comparando el
-orden en el que evaluan las áreas, es decir que se cumpla que un área es
-más/menos degradada que otra. Para ello seguimos los siguientes pasos
-por cada AP:
+Para ello seguimos los siguientes pasos por cada AP:
 
-1.  Dividir la AP en áreas de acuerdo al valor con consenso.
+1.  Dividir la AP en áreas que tengan el mismo valor de la respuesta de
+    expertos con consenso, por ejemplo A, B, C.
 
-2.  Ordenar estas áreas.
+2.  Ordenar estas áreas de menor degradación a mayor:
+    $$IE_{Expertos}(A)<IE_{Expertos}(B)<IE_{Expertos}(C)$$.
 
-3.  Calcular la mediana del IIE 2023 por área.
+3.  Calcular la mediana del IIE 2023 por área:
 
-4.  Comparar que el valor de IIE 2023 de cada pixel sea menor a la
-    mediana del área siguiente y mayor a la de la anterior.
+    $mediana(IIE_{2023})(A)$, $mediana(IIE_{2023})(B)$ y
+    $mediana(IIE_{2023})(C)$.
+
+4.  Para cada pixel i perteneciente al área B, si su valor de IIE 2023
+    es menor a la mediana del IIE 2023 del área C y mayor a la del área
+    A, decimos que está ordenado de manera correcta:
+
+    $$o_i =\begin{cases} 1 & mediana(IIE_{2023})(A)<IIE_{2023}(i)<=mediana(IIE_{2023})(C) \\
+                     0 &  eoc
+       \end{cases}$$
 
 #### **Validación mediante datos de Fauna**
 
@@ -279,10 +290,15 @@ de SiPeCaM (Sitios Permanentes de Calibración y Monitoreo de la
 Biodiversidad).
 
 De acuerdo a la vulnerabilidad a la cacería y exposición al humano, se
-seleccionó un conjunto de registros, provenientes del SNIB, de mamíferos
-y aves de talla grande para la validación de clases altas de IIE. Por su
-parte, la incidencia de ganadería se utilizó para la evaluación de IE
-baja y muy baja.
+seleccionó un conjunto de registros provenientes del SNIB de mamíferos y
+aves de talla grande para la validación de clases altas de IIE, los
+cuales incluyeron: *Canis latrans, Canis lupus, Caracara plancus,
+Cathartes aura, Coragyps atratus, Dicotyles tajacu, Leopardus pardalis,
+Lontra longicaudis, Lynx rufus, Meleagris gallopavo, Odocoileus
+virginianus, Puma concolor*.
+
+Por su parte, la incidencia de ganadería se utilizó para la evaluación
+de IE baja y muy baja.
 
 Por otro lado, se cuenta con observaciones de especies derivado del
 monitoreo con fototrampas de SiPeCaM. Los datos fueron recabados
@@ -311,11 +327,25 @@ corresponde al 0.33% del total del territorio que abarca el IIE.
 
 Del total de celdas con consenso, el 30.25% coinciden con el valor del
 IIE. De las que no coinciden, en el 91.0% los expertos asignaron mayor
-degradación de lq que se predice con el IIE. Al respecto, uno de los
+degradación de la que se predice con el IIE. Al respecto, uno de los
 resultados que sobresalen es que, a pesar del alto impacto humano en el
 centro del país, el 57.6% del IIE 2023 tiene valores de Integridad Alta
 en el territorio que abarca el mapa de consenso, en contraste, sólo el
 11.4% presentó Integridad Alta de acuerdo a los expertos.
+
+En la siguiente imagen podemos observar la distribución de las
+respuestas con consenso de cada categoría del IIE. Como podemos ver en
+la categoría IE Alta es donde existe una mayor discrepancia con las
+respuestas de los expertos, pues estos consideraron que solo el 16% de
+las celdas con IIE 2023 con valor IE Alta tienen realmente este valor,
+más bien, creen que la mayoría de estas celdas (60%) tienen un valor de
+IE Media. Esto podría explicarse por la subjetividad del cuestionario,
+pues un experto puede dudar en que cualquier zona tenga IE Alta y
+prefiere reservarse diciendo que tiene IE Media. El 29.3% de expertos no
+consideraron que existan zonas con Integridad Alta dentro de la AP en la
+que laboran, lo cual es poco probable, ya que son zonas protegidas.
+
+![](data/tabla_contingencia.png){width="291"}
 
 Cuando dividimos por AP, se tuvo una coincidencia promedio de 36.0%
 (DE=26.9%). Las AP con mayor coincidencia entre el consenso de expertos
@@ -325,21 +355,30 @@ y el IIE 2023, fueron la Laguna de Zempoala (100%), Cumbres de Ajusco
 Desierto de los Leones y El Chico, donde no hubo coincidencias y
 Mariposa Monarca con 3.5%.
 
-En cuanto a la comparación del orden de las categorías, el 39.33% del
+En cuanto a la comparación del orden de las categorías, el 39.36% del
 total coinciden en el orden del IIE 2023 y las respuestas con consenso
 de expertos. Considerando por AP, en promedio tuvieron una coincidencia
-en el orden del 53.3% (DE=24.2%), siendo las de mayor coincidencia
-Barranca de Metztitlán (94.7%), La Montaña Malinche o Matlalcuéyatl
-(88.7%), El Veladero (78.6%) y Lagunas de Zempoala (75.2%). Las de menor
-coincidencia fueron Sierra Gorda de Guanajuato (12.8%), Sierra de
-Huautla (18.7%), Mariposa Monarca (22.5%) e Iztaccíhuatl-Popocatépetl
-(35.2%).
+en el orden del 53.4% (DE=23.8%), siendo las de mayor coincidencia
+Barranca de Metztitlán (92.4%), La Montaña Malinche o Matlalcuéyatl
+(88.7%), El Veladero (76.3%) y Lagunas de Zempoala (75.2%). Las de menor
+coincidencia fueron Sierra Gorda de Guanajuato (12.9%), Sierra de
+Huautla (18.7%), Mariposa Monarca (22.7%) e Iztaccíhuatl-Popocatépetl
+(32.6%).
 
 Si los expertos están en lo correcto parecería que el modelo de IIE
-tiende a sobrestimar la Integridad de los Ecosistemas y entonces la
-condición es menor a la estimada hasta el momento.
+tiende a sobrestimar la Integridad de los Ecosistemas en la categoría de
+IE Alta, pues los expertos consideran que en estas zonas la IE es menor,
+en su mayoría IE Media.
 
 #### **Validación mediante datos de Fauna**
+
+Los resultados de los datos obtenidos del SNIB de observaciones de
+mamíferos y aves de talla grande se pueden ver en la siguiente gráfica,
+la cual muestra que estas especies se encuentran en mayor proporción en
+áreas Integras de acuerdo al IIE 2023, ya sea en áreas con IE Alta o IE
+Media, a excepción del *Meleagris gallopavo.*
+
+![](data/snib_vs_ie.png){width="533"}
 
 Los datos de SiPeCaM, procesados hasta el momento, muestran que las
 especies *Leopardus pardalis* y *Panthera onca* se encuentran con mayor
@@ -394,7 +433,7 @@ df_plot$ie <- factor(df_plot$ie, levels=c('Integridad muy baja',
 ggplot(df_plot,
        aes(x = zonas_reducidas, fill = ie, y = pct)) + 
   geom_col(position = 'fill') +
-  labs(fill = 'IIE', x = '', y='%') +
+  labs(fill = 'IIE 2023', x = '', y='Frecuencia') +
   scale_y_continuous(limits = c(0,1)) +
   coord_flip() +
   scale_fill_brewer(palette = "RdYlGn") +
