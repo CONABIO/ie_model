@@ -405,6 +405,14 @@ alimentación y por lo tanto tiene mayor tolerancia al disturbio humano.
 
 ![](data/sipecam_diff.png)
 
+![](data/sipecam_Bosque mesófilo de montaña.jpg){width="500"}
+
+![](data/sipecam_Selva húmeda.jpg){width="500"}
+
+![](data/sipecam_Bosques templados.jpg){width="500"}
+
+![](data/sipecam_Selva seca.jpg){width="500"}
+
 ### IIE
 
 ```{r ie, echo=FALSE, message=FALSE}
