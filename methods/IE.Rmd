@@ -2,9 +2,9 @@
 title: "Integridad Ecosistémica"
 bibliography: references.bib
 output:
-  pdf_document: default
-  html_document: default
   word_document: default
+  html_document: default
+  pdf_document: default
 editor_options:
   markdown:
     wrap: 72
@@ -80,7 +80,7 @@ el IIE es una medida que refleja el impacto de la intervención humana en
 la vegetación de los ecosistemas.
 
 |     | IIE (19 categorías)                   | IIE (4 Categorías)  | Descripción                                                                                                                                                                   |
-|-----------------|-----------------|-----------------|--------------------|
+|------------------|------------------|------------------|-------------------|
 | 0   | Estasis                               | Integridad alta     | No hay cambio de vegetación de estado primario                                                                                                                                |
 | 1   | Pseudoestasis inferior                | Integridad alta     | No hay cambio de estado primario, si hay cambio de tipo de vegetación pero dentro de la misma ecovariante                                                                     |
 | 2   | Pseudoestasis media                   | Integridad alta     | No hay cambio de estado primario, si hay cambio de tipo de vegetación a otra ecovariante pero el estrato dominante ascendiendo en porte (ej. matorral a bosque)               |
@@ -180,14 +180,15 @@ bandas VV y VH, así como la productividad primaria bruta media y su
 desviación estándar. Se transformó cada uno de los mapas de variables y
 el del IIE a estos *superpixeles*.
 
-Para relacionar las variables con el IIE, se entrenó un modelo XGBoost.
-Con este modelo se obtiene la probabilidad de que cada *superpixel*
-pertenezca a cada clase del IIE, asignando el valor con la mayor
-probabilidad. Se puede predecir el IIE para el periodo y territorio
-deseado utilizando el modelo entrenado con datos del 2017, mediante las
-variables.
+Para relacionar las variables con el IIE, se entrenó un modelo XGBoost,
+tomando de manera aleatoria el 70% de los datos para el entrenamiento y
+el 30% restante para su validación. Con este modelo se obtiene la
+probabilidad de que cada *superpixel* pertenezca a cada clase del IIE,
+asignando el valor con la mayor probabilidad. Se puede predecir el IIE
+para el periodo y territorio deseado utilizando el modelo entrenado con
+datos del 2017, mediante las variables.
 
-![](./data/modelo_flujo.png){width="70%"}
+![Flujo del modelaje](./data/modelo_flujo.png){width="70%"}
 
 ### Validación
 
@@ -239,11 +240,11 @@ rejilla sobre el mapa. Las categorías son:
 Previo a responder el cuestionario, se les explicó a los expertos el
 concepto de IE y cada una de las categorías. Una vez obtenida la
 respuesta de los expertos, se eligieron las celdas que tuvieron
-consenso. Se considera que existió consenso si más de la mitad (la mitad
-más uno, siempre y cuando haya respondido más de un experto)
-coincidieron en la misma respuesta para una celda (excluyendo a los
-expertos que no asignaron respuesta a esa celda). Si sólo un experto
-respondió en alguna AP, ésta será considerada como si hubiera consenso.
+consenso. Se considera que existió consenso si más de la mitad de
+expertos que asignaron respuesta a una celda (la mitad más uno, siempre
+y cuando haya respondido más de un experto) coincidieron en la misma
+respuesta. Si sólo un experto respondió en alguna AP, ésta será
+considerada como si hubiera consenso.
 
 Se calculó en qué proporción coincide las respuestas con consenso de los
 expertos y el valor del IIE de 2023. Otra manera de comparar estos
@@ -290,12 +291,12 @@ de SiPeCaM (Sitios Permanentes de Calibración y Monitoreo de la
 Biodiversidad).
 
 De acuerdo a la vulnerabilidad a la cacería y exposición al humano, se
-seleccionó un conjunto de registros provenientes del SNIB de mamíferos y
-aves de talla grande para la validación de clases altas de IIE, los
-cuales incluyeron: *Canis latrans, Canis lupus, Caracara plancus,
-Cathartes aura, Coragyps atratus, Dicotyles tajacu, Leopardus pardalis,
-Lontra longicaudis, Lynx rufus, Meleagris gallopavo, Odocoileus
-virginianus, Puma concolor*.
+seleccionó un conjunto de registros provenientes del SNIB, a partir del
+año 2000, de mamíferos y aves de talla grande para la validación de
+clases altas de IIE, los cuales incluyeron: *Canis latrans, Canis lupus,
+Caracara plancus, Cathartes aura, Coragyps atratus, Dicotyles tajacu,
+Leopardus pardalis, Lontra longicaudis, Lynx rufus, Meleagris gallopavo,
+Odocoileus virginianus, Puma concolor*.
 
 Por su parte, la incidencia de ganadería se utilizó para la evaluación
 de IE baja y muy baja.
@@ -314,38 +315,48 @@ representatividad de en al menos 3 de los 7 ecosistemas del país.
 
 ### Validación
 
+Para relacionar las variables con el IIE, se entrenó un modelo XGBoost
+con datos del 2017. La precisión del modelo, es decir, la proporción de
+pixeles con una predicción correcta fue de 74.71%, siendo de 78.51% para
+el conjunto de datos de entrenamiento y de 65.86% para los de
+validación.
+
 #### **Validación de expertos**
 
 Se realizó el cuestionario a 41 expertos, abarcando 19 AP, con un
 promedio de 2.2 (DE=1.1) expertos por cada AP.
 
-El 57.6% de las celdas donde hubo dos o más respuestas tuvieron
-consenso. El mapa de consenso, conformado por las celdas que tuvieron
-consenso y por aquellas que pertenecen a una AP donde sólo participó un
-experto, es el 69.7% del área total que abarcó el cuestionario y
-corresponde al 0.33% del total del territorio que abarca el IIE.
+Los expertos llegaron a un consenso en el 57.6% de las celdas (de
+aquellas donde hayan respondido más de un experto). El mapa de consenso
+se conformó por las celdas que tuvieron consenso y por aquellas que
+pertenecen a una AP donde sólo participó un experto, este mapa abarca el
+69.7% del área total del cuestionario y corresponde al 0.33% del total
+del territorio mexicano.
 
-Del total de celdas con consenso, el 30.25% coinciden con el valor del
-IIE. De las que no coinciden, en el 91.0% los expertos asignaron mayor
+Del mapa de consenso, el 30.25% coinciden con el valor del IIE 2023. De
+las que no coinciden, en el 91.0% los expertos asignaron mayor
 degradación de la que se predice con el IIE. Al respecto, uno de los
 resultados que sobresalen es que, a pesar del alto impacto humano en el
-centro del país, el 57.6% del IIE 2023 tiene valores de Integridad Alta
-en el territorio que abarca el mapa de consenso, en contraste, sólo el
+centro del país, el 57.6% del territorio que abarca el mapa de consenso
+tiene valores del IIE 2023 de Integridad Alta, en contraste, sólo el
 11.4% presentó Integridad Alta de acuerdo a los expertos.
 
-En la siguiente imagen podemos observar la distribución de las
-respuestas con consenso de cada categoría del IIE. Como podemos ver en
-la categoría IE Alta es donde existe una mayor discrepancia con las
-respuestas de los expertos, pues estos consideraron que solo el 16% de
-las celdas con IIE 2023 con valor IE Alta tienen realmente este valor,
-más bien, creen que la mayoría de estas celdas (60%) tienen un valor de
-IE Media. Esto podría explicarse por la subjetividad del cuestionario,
-pues un experto puede dudar en que cualquier zona tenga IE Alta y
-prefiere reservarse diciendo que tiene IE Media. El 29.3% de expertos no
+La distribución de las categorías del IIE 2023 de acuerdo a las
+categorías del mapa de consenso muestra cómo la categoría IE Alta es
+donde existe una mayor discrepancia entre el IIE 2023 y las respuestas
+de los expertos, pues estos consideraron que solo el 16% de las celdas
+con IIE 2023 con valor IE Alta tienen realmente este valor, y más bien,
+proponen que la mayoría (60%) tienen un valor de IE Media (Figura 2).
+Esto podría deberse a que entre los criterios que se les solicitó
+considerar a los expertos, fue la diversidad de fauna silvestre actual,
+la cual no es considerada en la predicción del IIE debido a la falta de
+este tipo de variables. Casi un tercio de los expertos (29.3%) no
 consideraron que existan zonas con Integridad Alta dentro de la AP en la
-que laboran, lo cual es poco probable, ya que son zonas protegidas.
+que laboran, lo cual es muy probable por la alta presión de la región y
+estar rodeadas de zonas urbanas densamente pobladas.
 
-![](data/tabla_contingencia.png){width="291"}
+![Distribución de cada categoría del IIE 2023 de acuerdo a las
+respuestas de expertos](data/tabla_contingencia.png){width="291"}
 
 Cuando dividimos por AP, se tuvo una coincidencia promedio de 36.0%
 (DE=26.9%). Las AP con mayor coincidencia entre el consenso de expertos
@@ -372,11 +383,11 @@ en su mayoría IE Media.
 
 #### **Validación mediante datos de Fauna**
 
-Los resultados de los datos obtenidos del SNIB de observaciones de
-mamíferos y aves de talla grande se pueden ver en la siguiente gráfica,
-la cual muestra que estas especies se encuentran en mayor proporción en
-áreas Integras de acuerdo al IIE 2023, ya sea en áreas con IE Alta o IE
-Media, a excepción del *Meleagris gallopavo.*
+Los resultados de las observaciones de mamíferos y aves de talla grande
+obtenidos del SNIB se pueden ver en la siguiente gráfica, la cual
+muestra que estas especies se encuentran en mayor proporción en áreas
+Integras de acuerdo al IIE 2023, ya sea en áreas con IE Alta o IE Media,
+a excepción del *Meleagris gallopavo.*
 
 ![](data/snib_vs_ie.png){width="533"}
 
@@ -384,9 +395,13 @@ Los datos de SiPeCaM, procesados hasta el momento, muestran que las
 especies *Leopardus pardalis* y *Panthera onca* se encuentran con mayor
 frecuencia, de manera estadísticamente significativa, en zonas donde el
 IIE 2023 tiene un valor de Integridad Alta, lo cual es válido para estas
-especies. Por otra parte, aunque no existe significancia estadísitica
-hay evidencia de que el Procyon lotor se observó en áreas donde IIE 2023
-muestra degradación, lo cual se esperaría de esta especie.
+especies debido a que ambas están en peligro de extinción en la NOM-059
+por su alta sensibilidad a la modificación del hábitat y caza. Por otra
+parte, aunque no existe significancia estadísitica hay evidencia de que
+el *Procyon lotor* se ha observado más en áreas donde el IIE 2023
+muestra degradación, lo cual se puede esperar de esta especie, puesto
+que es un omnívoro, es decir, tiene hábitos generalistas en su
+alimentación y por lo tanto tiene mayor tolerancia al disturbio humano.
 
 ![](data/sipecam_diff.png)
 
@@ -422,16 +437,30 @@ ggplot() +
 ```
 
 ```{r ie_bar_chart, echo=FALSE, message=FALSE}
-df_plot <- read.csv(paste0(data_folder,'/ie_ecorregiones_pct.csv'))
+df_plot <- read.csv(paste0(data_folder,'/ecosistemas_ie_pct.csv'))
 
 
 df_plot$ie <- factor(df_plot$ie, levels=c('Integridad muy baja',
                                           'Integridad baja',
                                           'Integridad media',
                                           'Integridad alta'))
+df_plot <- df_plot %>% 
+  mutate(eco = as.factor(eco)) %>% 
+  mutate(eco = dplyr::recode(eco, 
+                      '1.-  Bosques templados: coníferas / encino' = 'Bosques templados',
+                      '2.-  Bosque mesófilo de montaña' = 'Bosque mesófilo de montaña',
+                      '3.-  Selva húmeda: alta/mediana/sub&perennifolia' = 'Selva húmeda',
+                      '4.-  Selva seca: sub&caducifolia/espinosa' = 'Selva seca',
+                      '5.-  Matorral' = 'Matorral',
+                      '6.-  Pastizal' = 'Pastizal',
+                      '7.- Vegetación hidrófia' = 'Vegetación hidrófia'))
+
+df_plot <- df_plot %>%
+  arrange(desc(ie), pct) %>% 
+  mutate(eco = forcats::fct_inorder(eco))
 
 ggplot(df_plot,
-       aes(x = zonas_reducidas, fill = ie, y = pct)) + 
+       aes(x = eco, fill = ie, y = pct)) +
   geom_col(position = 'fill') +
   labs(fill = 'IIE 2023', x = '', y='Frecuencia') +
   scale_y_continuous(limits = c(0,1)) +

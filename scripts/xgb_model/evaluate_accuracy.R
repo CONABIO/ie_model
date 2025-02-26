@@ -4,10 +4,10 @@ library('tidyverse')
 library('terra')
 library('caret')
 
-r_ei <- terra::rast('output/ie_xgb_slic/march_sv_landcovercorrected/ie_xgb_slic_2017.tif')
+r_ei <- terra::rast('output/ie_xgb_slic/march_sv_edgedistancecorrected/ie_xgb_slic_2017.tif')
 r_hemerobia <- terra::rast('data/model_input/slic/2017/hemerobia_slic.tif')
 
-df_is_train <- read_csv('output/models/xgb slic v10/is_train.csv') # Indicator of training
+df_is_train <- read_csv('output/models/xgb slic v11/is_train.csv') # Indicator of training
 slic_file <- 'data/model_input/slic/2017/slic.shp'
 is_slic <- TRUE
 
@@ -80,11 +80,3 @@ ggplot(plt, aes(Prediction,Reference, fill= Freq)) +
   geom_tile() + geom_text(aes(label=Freq)) +
   scale_fill_gradient(low="white", high="blue") +
   labs(x = "Prediction",y = "Reference") 
-
-
-# df_aux <- df_test %>% 
-#   mutate(mistake = ifelse((prediction == 1 & hemerobia == 4), 1, 0))
-# 
-# writeRaster(rast(df_aux %>%
-#                    select(c(x,y,mistake))), 
-#             "output/models/xgb slic v11/r_mistake_4.tif")
