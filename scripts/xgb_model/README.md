@@ -2,61 +2,113 @@
 
 Se desarrolló un modelo XGBoost para estimar la integridad ecológica, con los siguientes datos:
 
-| Fuente de datos                             | Variable                                      | Nombre de la variable | Link de descarga                                                                  | Referencia                                     |
-|-------------|-------------|-------------|-------------------|-------------|
-| Hemerobia                                   | Hemerobia                                     | hemerobia             |                                                                                   | Uso de suelo y vegetación, INEGI               |
-| Zona de vida de Holdridge                   | Zona de vida de Holdridge                     | holdridge             | <http://www.conabio.gob.mx/informacion/gis/?vns=gis_root/region/fisica/zvh_mx3gw> | Portal de Geoinformación, CONABIO              |
-| Elevación (DEM)                             | Elevación promedio                            | dem90_mean            | <https://code.earthengine.google.com/b08b9d4d6689d1f30467a230d9c21ea9>            | DEM GLO-30, Copernicus                         |
-|                                             | Mínimo de elevación                           | dem90_min             |                                                                                   | DEM GLO-30, Copernicus                         |
-|                                             | Máximo de elevación                           | dem90_max             |                                                                                   | DEM GLO-30, Copernicus                         |
-| Fotosíntesis (Productividad primaria bruta) | Fotosíntesis promedio anual                   | modis_mean            | <https://code.earthengine.google.com/55b24b28652d3a26aa8f5ebc14cc21be>            | Terra Gross Primary Productivity, NASA LP DAAC |
-|                                             | Desviación estándar anual de fotosíntesis     | modis_sd              |                                                                                   | Terra Gross Primary Productivity, NASA LP DAAC |
-|                                             | Promedio de fotosístesis en estación lluviosa | modis_rainy           |                                                                                   | Terra Gross Primary Productivity, NASA LP DAAC |
-|                                             | Promedio de fotosítesis en estación seca      | modis_dry             |                                                                                   | Terra Gross Primary Productivity, NASA LP DAAC |
-| Radar (de apertura sintética en la banda C) | Promedio anual de banda VH                    | vh                    | <https://code.earthengine.google.com/fc3284f4477aa1765242f61148991966>            | Sentinel-1, Copernicus Sentinel data           |
-|                                             | DE anual de banda VH                          | vh_sd                 |                                                                                   | Sentinel-1, Copernicus Sentinel data           |
-|                                             | Entropía del promedio anual de banda VH       | vh_entropy            |                                                                                   | Sentinel-1, Copernicus Sentinel data           |
-|                                             | Promedio anual de banda VV                    | vv                    |                                                                                   | Sentinel-1, Copernicus Sentinel data           |
-|                                             | DE anual de banda VV                          | vv_sd                 |                                                                                   | Sentinel-1, Copernicus Sentinel data           |
-|                                             | Entropía del promedio anual de banda VV       | vv_entropy            |                                                                                   | Sentinel-1, Copernicus Sentinel data           |
-| Uso de suelo                                | Uso de suelo                                  | land_cover            | <https://code.earthengine.google.com/d8bac0a4a561e853d004d83c60e41fd3>            | MODIS Land Cover Type, NASA LP DAAC            |
++---------------------------------------------+-----------------------------------------+-----------------------+--------------------------------------------------------------------------------------+---------------------------------------------------+
+| Fuente de datos                             | Variable                                | Nombre de la variable | Link de descarga                                                                     | Referencia                                        |
++=============================================+=========================================+=======================+======================================================================================+===================================================+
+| Hemerobia                                   | Hemerobia                               | hemerobia             |                                                                                      | Uso de suelo y vegetación, INEGI                  |
++---------------------------------------------+-----------------------------------------+-----------------------+--------------------------------------------------------------------------------------+---------------------------------------------------+
+| Zona de vida de Holdridge                   | Zona de vida de Holdridge               | holdridge             | <http://www.conabio.gob.mx/informacion/gis/?vns=gis_root/region/fisica/zvh_mx3gw>    | Portal de Geoinformación, CONABIO                 |
++---------------------------------------------+-----------------------------------------+-----------------------+--------------------------------------------------------------------------------------+---------------------------------------------------+
+| Elevación (DEM)                             | Elevación promedio                      | dem90_mean            | <https://code.earthengine.google.com/cd45246df07cb1b73549599d64040562>               | DEM GLO-30, Copernicus                            |
++---------------------------------------------+-----------------------------------------+-----------------------+--------------------------------------------------------------------------------------+---------------------------------------------------+
+|                                             | Mínimo de elevación                     | dem90_min             |                                                                                      | DEM GLO-30, Copernicus                            |
++---------------------------------------------+-----------------------------------------+-----------------------+--------------------------------------------------------------------------------------+---------------------------------------------------+
+|                                             | Máximo de elevación                     | dem90_max             |                                                                                      | DEM GLO-30, Copernicus                            |
++---------------------------------------------+-----------------------------------------+-----------------------+--------------------------------------------------------------------------------------+---------------------------------------------------+
+| Fotosíntesis (Productividad primaria bruta) | Fotosíntesis promedio                   | modis_mean            | <https://code.earthengine.google.com/38ca257425a58333e071591d531de13a>               | Terra Gross Primary Productivity, NASA LP DAAC    |
++---------------------------------------------+-----------------------------------------+-----------------------+--------------------------------------------------------------------------------------+---------------------------------------------------+
+|                                             | Desviación estándar de fotosíntesis     | modis_sd              |                                                                                      | Terra Gross Primary Productivity, NASA LP DAAC    |
++---------------------------------------------+-----------------------------------------+-----------------------+--------------------------------------------------------------------------------------+---------------------------------------------------+
+| Radar (de apertura sintética en la banda C) | Promedio de banda VH                    | vh                    | <https://code.earthengine.google.com/72526f0f06c32470907d7b82c641eb42>               | Sentinel-1, Copernicus Sentinel data              |
++---------------------------------------------+-----------------------------------------+-----------------------+--------------------------------------------------------------------------------------+---------------------------------------------------+
+|                                             | DE de banda VH                          | vh_sd                 |                                                                                      | Sentinel-1, Copernicus Sentinel data              |
++---------------------------------------------+-----------------------------------------+-----------------------+--------------------------------------------------------------------------------------+---------------------------------------------------+
+|                                             | Entropía del promedio de banda VH       | vh_entropy            |                                                                                      | Sentinel-1, Copernicus Sentinel data              |
++---------------------------------------------+-----------------------------------------+-----------------------+--------------------------------------------------------------------------------------+---------------------------------------------------+
+|                                             | Suma promedio de banda VH               | vh_savg               |                                                                                      | Sentinel-1, Copernicus Sentinel data              |
++---------------------------------------------+-----------------------------------------+-----------------------+--------------------------------------------------------------------------------------+---------------------------------------------------+
+|                                             | Promedio anual de banda VV              | vv                    |                                                                                      | Sentinel-1, Copernicus Sentinel data              |
++---------------------------------------------+-----------------------------------------+-----------------------+--------------------------------------------------------------------------------------+---------------------------------------------------+
+|                                             | DE anual de banda VV                    | vv_sd                 |                                                                                      | Sentinel-1, Copernicus Sentinel data              |
++---------------------------------------------+-----------------------------------------+-----------------------+--------------------------------------------------------------------------------------+---------------------------------------------------+
+|                                             | Entropía del promedio anual de banda VV | vv_entropy            |                                                                                      | Sentinel-1, Copernicus Sentinel data              |
++---------------------------------------------+-----------------------------------------+-----------------------+--------------------------------------------------------------------------------------+---------------------------------------------------+
+|                                             | Suma promedio de banda VH               | vv_savg               |                                                                                      | Sentinel-1, Copernicus Sentinel data              |
++---------------------------------------------+-----------------------------------------+-----------------------+--------------------------------------------------------------------------------------+---------------------------------------------------+
+| Cobertura del suelo                         | Cobertura del suelo                     | land_cover            | <https://code.earthengine.google.com/a7f28385181b4601d41d4a61053c2e47>               | MODIS Land Cover Type, NASA LP DAAC               |
++---------------------------------------------+-----------------------------------------+-----------------------+--------------------------------------------------------------------------------------+---------------------------------------------------+
+| Distancia al borde                          | Distancia al borde                      | edge_distance         | Se genera con: <https://github.com/CONABIO/ie_model/tree/main/scripts/edge_distance> | MODIS Land Cover Type, NASA LP DAAC               |
+|                                             |                                         |                       |                                                                                      |                                                   |
+|                                             |                                         |                       |                                                                                      | INEGI (2022). Red Nacional de Caminos. RNC. 2022. |
++---------------------------------------------+-----------------------------------------+-----------------------+--------------------------------------------------------------------------------------+---------------------------------------------------+
 
 La Zona de vida de Holdridge fue procesada agregando diversas categorías en una sola, con el fin de reducir 31 categorías a 12, de la siguiente manera:
 
-|                 |                    |                                                        |
-|--------------|---------------|-------------------------------------------|
++-----------------+--------------------+--------------------------------------------------------+
 | Nueva categoría | Categoría original | Descripción                                            |
++-----------------+--------------------+--------------------------------------------------------+
 | 1               | 1                  | Desierto alvar [Templado - Lluvioso]                   |
++-----------------+--------------------+--------------------------------------------------------+
 |                 | 2                  | Desierto alvar [Templado - Muy Lluvioso]               |
++-----------------+--------------------+--------------------------------------------------------+
 |                 | 3                  | Desierto alvar [Cálido - Muy Lluvioso]                 |
++-----------------+--------------------+--------------------------------------------------------+
 | 2               | 4                  | Desierto Templado Cálido [Templado - Seco]             |
++-----------------+--------------------+--------------------------------------------------------+
 | 3               | 5                  | Desierto Subtropical [Cálido - Seco]                   |
++-----------------+--------------------+--------------------------------------------------------+
 | 4               | 6                  | Tundra Húmeda subalpina [Templado - Lluvioso]          |
++-----------------+--------------------+--------------------------------------------------------+
 |                 | 7                  | Tundra Húmeda alpina [Templado - Subhúmedo]            |
++-----------------+--------------------+--------------------------------------------------------+
 | 5               | 8                  | Estepa Espinosa prermontana [Templado - Seco]          |
++-----------------+--------------------+--------------------------------------------------------+
 |                 | 9                  | Estepa montana [Templado - Seco]                       |
++-----------------+--------------------+--------------------------------------------------------+
 | 6               | 10                 | Matorral Desértico [Cálido - Seco]                     |
++-----------------+--------------------+--------------------------------------------------------+
 |                 | 11                 | Matorral Desértico premontano [Cálido - Seco]          |
++-----------------+--------------------+--------------------------------------------------------+
 |                 | 12                 | Matorral Desértico montano bajo [Templado - Seco]      |
++-----------------+--------------------+--------------------------------------------------------+
 | 7               | 13                 | Bosque Espinoso [Cálido - Seco]                        |
++-----------------+--------------------+--------------------------------------------------------+
 | 8               | 14                 | Bosque Muy Seco [Cálido - Subhúmedo]                   |
++-----------------+--------------------+--------------------------------------------------------+
 | 9               | 15                 | Bosque Seco premontano [Cálido - Subhúmedo]            |
++-----------------+--------------------+--------------------------------------------------------+
 |                 | 16                 | Bosque Seco montano bajo [Templado - Subhúmedo]        |
++-----------------+--------------------+--------------------------------------------------------+
 | 10              | 17                 | Bosque Subhúmedo [Cálido - Lluvioso]                   |
++-----------------+--------------------+--------------------------------------------------------+
 |                 | 18                 | Bosque Subhúmedo premontano [Cálido - Lluvioso]        |
++-----------------+--------------------+--------------------------------------------------------+
 |                 | 19                 | Bosque Subhúmedo montano [Templado - Subhúmedo]        |
++-----------------+--------------------+--------------------------------------------------------+
 |                 | 20                 | Bosque Subhúmedo subalpino [Templado - Seco]           |
++-----------------+--------------------+--------------------------------------------------------+
 |                 | 21                 | Bosque Subhúmedo subalpino [Templado - Subhúmedo]      |
++-----------------+--------------------+--------------------------------------------------------+
 | 11              | 22                 | Bosque Húmedo premontano [Cálido - Lluvioso]           |
++-----------------+--------------------+--------------------------------------------------------+
 |                 | 23                 | Bosque Húmedo montano bajo [Templado - Lluvioso]       |
++-----------------+--------------------+--------------------------------------------------------+
 |                 | 24                 | Bosque Húmedo montano [Templado - Lluvioso]            |
++-----------------+--------------------+--------------------------------------------------------+
 |                 | 25                 | Bosque Húmedo subalpino [Templado - Lluvioso]          |
++-----------------+--------------------+--------------------------------------------------------+
 | 12              | 26                 | Bosque Lluvioso [Cálido - Muy Lluvioso]                |
++-----------------+--------------------+--------------------------------------------------------+
 |                 | 27                 | Bosque Lluvioso premontano [Cálido - Muy Lluvioso]     |
++-----------------+--------------------+--------------------------------------------------------+
 |                 | 28                 | Bosque Lluvioso montano bajo [Cálido - Muy Lluvioso]   |
++-----------------+--------------------+--------------------------------------------------------+
 |                 | 29                 | Bosque Lluvioso montano bajo [Templado - Muy Lluvioso] |
++-----------------+--------------------+--------------------------------------------------------+
 |                 | 30                 | Bosque Lluvioso montano [Cálido - Muy Lluvioso]        |
++-----------------+--------------------+--------------------------------------------------------+
 |                 | 31                 | Bosque Lluvioso montano [Templado - Muy Lluvioso]      |
++-----------------+--------------------+--------------------------------------------------------+
 
 ## Implementación
 
@@ -93,8 +145,8 @@ El flujo de trabajo es el siguiente:
 
     Si se desea entrenar el modelo seguir el paso 3, de lo contrario pasar al 4.
 
-3.  Entrenar el modelo con `xgb_train.r`. Si se tiene una base de datos grande que genera problemas de memoria, utilizar `xgb_train_largeData.R`, que crea una matriz esparcida con los datos y entrena el modelo de forma iterativa.
+3.  Entrenar el modelo con `xgb_train.r`.
 
-4.  Predecir el valor de la integridad ecológica con el modelo entrenado y nuevos datos, mediante el script `xgb_predict.R`. Y si se entrenó con matriz esparcida, usar `xgb_predict_largeData.R`.
+4.  Predecir el valor de la integridad ecológica con el modelo entrenado y nuevos datos, mediante el script `xgb_predict.R`.
 
 Se puede estimar la integridad ecológica para todo año en el que se tengan datos, con el modelo entrenado para 2017, éste se puede encontrar en la carpeta `models` con el nombre `xgb.fit` y `slic_xgb.fit` para el modelo que usa SLIC.
