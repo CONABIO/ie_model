@@ -4,14 +4,15 @@ library('tidyverse')
 library('terra')
 library('caret')
 
-r_ei <- terra::rast('output/ie_xgb_slic/march_sv_edgedistancecorrected/ie_xgb_slic_2017.tif')
-r_hemerobia <- terra::rast('data/model_input/slic/2017/hemerobia_slic.tif')
+r_ei <- terra::rast('output/ie_xgb/ie_xgb_2017.tif')
+r_hemerobia <- terra::rast('data/sources/hemerobia/processed/2017/hemerobia_20251030.tif')
 
-df_is_train <- read_csv('output/models/xgb slic v11/is_train.csv') # Indicator of training
+df_is_train <- read_csv('output/models/xgb v4/is_train.csv') # Indicator of training
 slic_file <- 'data/model_input/slic/2017/slic.shp'
-is_slic <- TRUE
+is_slic <- FALSE
 
 r_hemerobia <- project(r_hemerobia, r_ei)
+names(r_hemerobia) <- "hemerobia"
 
 if(is_slic) {
   sf <- terra::vect(slic_file)

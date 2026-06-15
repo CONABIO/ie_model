@@ -26,14 +26,14 @@ points <- points %>%
   drop_na()
 
 # Get values for each point
-s_vp_points <- st_intersection(s_vp[c('TIP_ECOV')], points)
+s_vp_points <- st_intersection(s_vp[c('TIP_ECOV','TIP_VEG')], points)
 s_us_points <- st_intersection(s_us['DESCRIPCIO'], points)
 sf_data <- st_join(s_vp_points %>% 
                      dplyr::select(-c('mask')), s_us_points)
 
 # Join hemerobia value
 sf_data <- sf_data %>% 
-  left_join(df_cat, by = c("TIP_ECOV","DESCRIPCIO"))
+  left_join(df_cat, by = c("TIP_ECOV","DESCRIPCIO","TIP_VEG"))
 
 # Create raster
 r_hem <- st_rasterize(sf_data %>% 
@@ -42,4 +42,4 @@ r_hem <- st_rasterize(sf_data %>%
 
 # Save raster
 write_stars(r_hem, 
-            'data/hemerobia.tif')
+            'data/sources/hemerobia/processed/2017/hemerobia_20251020.tif')

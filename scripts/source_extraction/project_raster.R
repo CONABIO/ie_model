@@ -3,8 +3,8 @@
 library('terra')
 library('tidyterra')
  
-input_file <- 'data/sources/sentinel/raw/2023/march/VH.tif'
-output_file <- 'data/sources/sentinel/processed/2023/march/vh_median.tif'
+input_file <- 'data/sources/sentinel/raw/2024/VH.tif'
+output_file <- 'data/sources/sentinel/processed/2024/vh.tif'
 mask_file <- 'data/sources/mex_mask/Mask_IE2018.tif'  # reference raster
 # projection_method <- 'near'  # interpolation method for categorical data
 projection_method <- 'bilinear'  # interpolation method for numerical data
