@@ -6,7 +6,7 @@ library('fastDummies')
 library('caret')
 library('hardhat')
 
-set.seed <- 1
+set.seed(1)
 
 # ======================Input============================
 input_folder <- 'data/model_input/slic/2017'

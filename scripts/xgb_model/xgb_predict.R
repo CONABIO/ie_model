@@ -9,7 +9,7 @@ library('caret')
 library('sf')
 library('fasterize')
 
-set.seed <- 1
+set.seed(1)
 
 # ======================Input============================
 input_folder <- 'data/model_input/slic/2022'
