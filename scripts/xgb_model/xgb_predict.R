@@ -61,8 +61,7 @@ xgb.matrix <- xgb.DMatrix(data=as.matrix(df %>%
 all(colnames(xgb.matrix)==variables_list$x)
 # ====================Predicting==========================
 xgb.pred <- as.data.frame(predict(xgb.fit,xgb.matrix,reshape=T))
-# Hemerobia used in training doesn't have categories 0 and 17
-colnames(xgb.pred) <- c(seq(1,16,by=1),18)
+colnames(xgb.pred) <- 0:15
 df$prediction <- as.numeric(colnames(xgb.pred)[apply(xgb.pred,1,which.max)])
 df$prob <- apply(xgb.pred, 1, max)
 # =================Creating raster========================
