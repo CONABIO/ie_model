@@ -2,23 +2,27 @@
 
 library('terra')
 library('tidyterra')
- 
-input_file <- 'data/sources/sentinel/raw/2024/VH.tif'
-output_file <- 'data/sources/sentinel/processed/2024/vh.tif'
-mask_file <- 'data/sources/mex_mask/Mask_IE2018.tif'  # reference raster
-# projection_method <- 'near'  # interpolation method for categorical data
-projection_method <- 'bilinear'  # interpolation method for numerical data
 
-r_mask <- terra::rast(mask_file)
-r_raster <- terra::rast(input_file)
+project_raster <- function(input_file = 'data/sources/sentinel/raw/2024/VH.tif',
+                           output_file = 'data/model_input/rasters/2024/vh.tif',
+                           mask_file = 'data/sources/mex_mask/Mask_IE2018.tif',
+                           projection_method = 'bilinear',
+                           fill_na_value = NULL) {
+  r_mask <- terra::rast(mask_file)
+  r_raster <- terra::rast(input_file)
 
-# Only use to fill MODIS GPP NA values with 0, otherwise comment out
-# r_raster <- ifel(is.na(r_raster), 0, r_raster)
+  if (!is.null(fill_na_value)) {
+    r_raster <- terra::ifel(is.na(r_raster), fill_na_value, r_raster)
+  }
 
-# Project raster to mask's extent, epsg and resolution
-r_raster <- project(r_raster, r_mask, method=projection_method)
+  # Project raster to mask's extent, epsg and resolution.
+  r_raster <- terra::project(r_raster, r_mask, method = projection_method)
 
-# Assign NA to raster when mask is NA
-r_raster <- mask(r_raster, r_mask)
+  # Assign NA to raster when mask is NA.
+  r_raster <- terra::mask(r_raster, r_mask)
 
-writeRaster(r_raster, output_file, overwrite=TRUE)
+  dir.create(dirname(output_file), recursive = TRUE, showWarnings = FALSE)
+  terra::writeRaster(r_raster, output_file, overwrite = TRUE)
+
+  invisible(r_raster)
+}
