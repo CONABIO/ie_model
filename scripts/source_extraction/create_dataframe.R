@@ -20,7 +20,7 @@ create_dataframe <- function(input_folder = 'data/model_input/rasters/2024',
 
   # Split rasters in nx*ny tiles and iterate through them.
   raster_splited <- SpaDES.tools::splitRaster(raster_list, nx = nx, ny = ny)
-  output_files <- character(nx * ny)
+  output_files <- character(0)
 
   for (r in seq_len(nx * ny)) {
     print(r)
@@ -30,11 +30,15 @@ create_dataframe <- function(input_folder = 'data/model_input/rasters/2024',
     df_raster <- terra::as.data.frame(raster,
                                       xy = TRUE,
                                       na.rm = TRUE)
+    if (nrow(df_raster) == 0) {
+      next
+    }
+
     names(df_raster)[3:ncol(df_raster)] <- col_names
 
-    output_files[r] <- file.path(output_folder,
-                                 paste0('df_input_model_', r, '.csv'))
-    write.csv(df_raster, output_files[r], row.names = FALSE)
+    output_file <- file.path(output_folder, paste0('df_input_model_', r, '.csv'))
+    write.csv(df_raster, output_file, row.names = FALSE)
+    output_files <- c(output_files, output_file)
   }
 
   invisible(output_files)
