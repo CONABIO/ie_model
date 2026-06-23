@@ -3,97 +3,97 @@ mask_file: data/sources/mex_mask/Mask_IE2018.tif
 rasters:
   - name: dem90_max
     input_file: data/sources/dem90/elevation_250_max.tif
-    output_file: data/model_input/rasters/2024/dem90_max.tif
+    output_file: data/model_input/rasters/2025/dem90_max.tif
     projection_method: bilinear
 
   - name: dem90_mean
     input_file: data/sources/dem90/elevation_250_mean.tif
-    output_file: data/model_input/rasters/2024/dem90_mean.tif
+    output_file: data/model_input/rasters/2025/dem90_mean.tif
     projection_method: bilinear
 
   - name: dem90_min
     input_file: data/sources/dem90/elevation_250_min.tif
-    output_file: data/model_input/rasters/2024/dem90_min.tif
+    output_file: data/model_input/rasters/2025/dem90_min.tif
     projection_method: bilinear
 
   - name: edge_distance
-    input_file: data/sources/edge_distance_modis/edge_distance.tif
-    output_file: data/model_input/rasters/2024/edge_distance.tif
+    input_file: data/sources/edge_distance/edge_distance.tif
+    output_file: data/model_input/rasters/2025/edge_distance.tif
     projection_method: bilinear
 
   - name: holdridge
     input_file: data/sources/holdridge/zonas_reducidas.tif
-    output_file: data/model_input/rasters/2024/holdridge.tif
+    output_file: data/model_input/rasters/2025/holdridge.tif
     projection_method: near
 
   - name: land_cover
-    input_file: data/sources/land_cover/2024/land_cover.tif
-    output_file: data/model_input/rasters/2024/land_cover.tif
+    input_file: data/sources/land_cover/2025/land_cover.tif
+    output_file: data/model_input/rasters/2025/land_cover.tif
     projection_method: near
 
   - name: modis_mean
-    input_file: data/sources/modis/2024/modis_mean.tif
-    output_file: data/model_input/rasters/2024/modis_mean.tif
+    input_file: data/sources/modis/2025/modis_mean.tif
+    output_file: data/model_input/rasters/2025/modis_mean.tif
     projection_method: bilinear
     fill_na_value: 0
 
   - name: modis_sd
-    input_file: data/sources/modis/2024/modis_sd.tif
-    output_file: data/model_input/rasters/2024/modis_sd.tif
+    input_file: data/sources/modis/2025/modis_sd.tif
+    output_file: data/model_input/rasters/2025/modis_sd.tif
     projection_method: bilinear
     fill_na_value: 0
 
   - name: vh
-    input_file: data/sources/sentinel/2024/VH.tif
-    output_file: data/model_input/rasters/2024/vh.tif
+    input_file: data/sources/sentinel/2025/VH.tif
+    output_file: data/model_input/rasters/2025/vh.tif
     projection_method: bilinear
 
   - name: vh_entropy
-    input_file: data/sources/sentinel/2024/VH_entropy.tif
-    output_file: data/model_input/rasters/2024/vh_entropy.tif
+    input_file: data/sources/sentinel/2025/VH_entropy.tif
+    output_file: data/model_input/rasters/2025/vh_entropy.tif
     projection_method: bilinear
 
   - name: vh_savg
-    input_file: data/sources/sentinel/2024/VH_savg.tif
-    output_file: data/model_input/rasters/2024/vh_savg.tif
+    input_file: data/sources/sentinel/2025/VH_savg.tif
+    output_file: data/model_input/rasters/2025/vh_savg.tif
     projection_method: bilinear
 
   - name: vh_sd
-    input_file: data/sources/sentinel/2024/VH_sd.tif
-    output_file: data/model_input/rasters/2024/vh_sd.tif
+    input_file: data/sources/sentinel/2025/VH_sd.tif
+    output_file: data/model_input/rasters/2025/vh_sd.tif
     projection_method: bilinear
 
   - name: vv
-    input_file: data/sources/sentinel/2024/VV.tif
-    output_file: data/model_input/rasters/2024/vv.tif
+    input_file: data/sources/sentinel/2025/VV.tif
+    output_file: data/model_input/rasters/2025/vv.tif
     projection_method: bilinear
 
   - name: vv_entropy
-    input_file: data/sources/sentinel/2024/VV_entropy.tif
-    output_file: data/model_input/rasters/2024/vv_entropy.tif
+    input_file: data/sources/sentinel/2025/VV_entropy.tif
+    output_file: data/model_input/rasters/2025/vv_entropy.tif
     projection_method: bilinear
 
   - name: vv_savg
-    input_file: data/sources/sentinel/2024/VV_savg.tif
-    output_file: data/model_input/rasters/2024/vv_savg.tif
+    input_file: data/sources/sentinel/2025/VV_savg.tif
+    output_file: data/model_input/rasters/2025/vv_savg.tif
     projection_method: bilinear
 
   - name: vv_sd
-    input_file: data/sources/sentinel/2024/VV_sd.tif
-    output_file: data/model_input/rasters/2024/vv_sd.tif
+    input_file: data/sources/sentinel/2025/VV_sd.tif
+    output_file: data/model_input/rasters/2025/vv_sd.tif
     projection_method: bilinear
 
 dataframe:
-  input_folder: data/model_input/rasters/2024
-  output_folder: data/model_input/dataframe/2024
+  input_folder: data/model_input/rasters/2025
+  output_folder: data/model_input/dataframe/2025
   nx: 3
   ny: 2
 
 prediction:
-  input_folder: data/model_input/dataframe/2024
+  input_folder: data/model_input/dataframe/2025
   output_files:
-    ie: output/predictions/xgb/v4/ie_xgb_2024.tif
-    probability: output/predictions/xgb/v4/ie_xgb_2024_prob.tif
+    ie: output/predictions/xgb/v4/ie_xgb_2025.tif
+    probability: output/predictions/xgb/v4/ie_xgb_2025_prob.tif
   model_folder: output/models/xgb/v4
   categorical_variables:
     - holdridge

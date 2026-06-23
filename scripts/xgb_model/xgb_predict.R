@@ -20,15 +20,22 @@ xgb_predict <- function(input_folder = 'data/model_input/dataframe/2024',
                         is_slic = FALSE) {
   # ==================Processing data======================
   # Read data
-  df <- list.files(input_folder, "csv$", full.names = TRUE) %>%
-    map_dfr(read_csv)
+  message('Reading prediction data from: ', input_folder)
+  input_files <- list.files(input_folder, "csv$", full.names = TRUE)
+  df <- input_files %>%
+    map_dfr(read_csv, show_col_types = FALSE)
+  message('  read ', length(input_files), ' CSV')
+
+  message('Loading model from: ', model_folder)
   xgb.fit <- xgb.load(file.path(model_folder, 'xgb.fit'))
   model_variables <- read.csv(file.path(model_folder, 'variables_list.csv'))$x
   r_mask <- terra::rast(mask_file)
   if (is_slic) {
+    message('Loading SLIC polygons')
     slic_polygons <- terra::vect(file.path(input_folder, 'slic.shp'))
   }
 
+  message('Preparing prediction variables')
   df <- df %>%
     select(-any_of(ignore_variables)) %>%
     drop_na() %>%
@@ -48,16 +55,18 @@ xgb_predict <- function(input_folder = 'data/model_input/dataframe/2024',
   }
   df_model <- df %>%
     select(all_of(model_variables))
-
+  
   # Transform the data set into xgb.Matrix
   xgb.matrix <- xgb.DMatrix(data = as.matrix(df_model))
   # ====================Predicting==========================
+  message('Running XGBoost prediction')
   xgb.pred <- as.data.frame(predict(xgb.fit, xgb.matrix, reshape = T))
   colnames(xgb.pred) <- seq(0, ncol(xgb.pred) - 1)
   df$prediction <- as.numeric(colnames(xgb.pred)[apply(xgb.pred, 1, which.max)])
   df$prob <- apply(xgb.pred, 1, max)
   # =================Creating raster========================
   if (is_slic) {
+    message('Creating rasters from SLIC polygons')
     # Add missing IDs
     df_aux <- as.data.frame(1:max(df$ID))
     names(df_aux) <- 'ID'
@@ -73,6 +82,7 @@ xgb_predict <- function(input_folder = 'data/model_input/dataframe/2024',
     r_prob <- terra::rasterize(slic_polygons, r_mask, field = "prob")
 
   } else {
+    message('Creating rasters from x/y coordinates')
     # Create raster
     r_pred <- terra::rast(df %>%
                             select(x, y, prediction))
@@ -85,12 +95,15 @@ xgb_predict <- function(input_folder = 'data/model_input/dataframe/2024',
 
   dir.create(dirname(output_files['ie']), recursive = TRUE, showWarnings = FALSE)
   dir.create(dirname(output_files['probability']), recursive = TRUE, showWarnings = FALSE)
+  message('Writing prediction raster: ', output_files['ie'])
   terra::writeRaster(r_pred,
                      output_files['ie'],
                      overwrite = TRUE)
+  message('Writing probability raster: ', output_files['probability'])
   terra::writeRaster(r_prob,
                      output_files['probability'],
                      overwrite = TRUE)
+  message('XGBoost prediction complete')
 
   invisible(list(prediction = r_pred,
                  probability = r_prob))

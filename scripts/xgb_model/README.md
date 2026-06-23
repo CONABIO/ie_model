@@ -99,3 +99,35 @@ El flujo de trabajo es el siguiente:
 4.  Predecir el valor de la integridad ecológica con el modelo entrenado y nuevos datos, mediante el script `xgb_predict.R`.
 
 Se puede estimar la integridad ecológica para todo año en el que se tengan datos, con el modelo entrenado para 2017, éste se puede encontrar en la carpeta `models` con el nombre `xgb.fit` y `slic_xgb.fit` para el modelo que usa SLIC.
+
+## Correr una nueva predicción con el pipeline
+
+Para correr una nueva predicción se puede usar el script [`xgb_pipeline_predict.R`](xgb_pipeline_predict.R), que ejecuta en orden los pasos necesarios para preparar los datos y generar los rasters de salida:
+
+1.  Proyecta y enmascara cada raster de entrada con [`project_raster.R`](../source_extraction/project_raster.R).
+2.  Crea los dataframes de entrada del modelo con [`create_dataframe.R`](../source_extraction/create_dataframe.R).
+3.  Genera los rasters de predicción y probabilidad con [`xgb_predict.R`](xgb_predict.R).
+
+Antes de correr el pipeline, actualizar los parámetros en [`xgb_pipeline_predict.yml`](xgb_pipeline_predict.yml):
+
+-   `mask_file`: raster de referencia para extensión, resolución, proyección y máscara.
+-   `rasters`: lista de rasters fuente que se van a proyectar. Cada raster debe incluir `name`, `input_file`, `output_file` y `projection_method`. Usar `near` para variables categóricas y `bilinear` para variables continuas. Para MODIS se puede usar `fill_na_value: 0` si se requiere reemplazar valores NA por cero antes de proyectar.
+-   `dataframe`: carpeta con rasters proyectados (`input_folder`), carpeta de salida para los CSV (`output_folder`) y número de particiones (`nx`, `ny`).
+-   `prediction`: carpeta de CSV de entrada, archivos de salida (`ie` y `probability`), carpeta del modelo entrenado, variables categóricas, variables a ignorar y si la predicción usa SLIC (`is_slic`).
+
+La estructura esperada para una predicción por año es:
+
+```text
+data/model_input/rasters/{year}/
+data/model_input/dataframe/{year}/
+output/predictions/xgb/{version}/ie_xgb_{year}.tif
+output/predictions/xgb/{version}/ie_xgb_{year}_prob.tif
+```
+
+Para ejecutar el pipeline desde la raíz del proyecto:
+
+```bash
+Rscript scripts/xgb_model/xgb_pipeline_predict.R
+```
+
+El script imprime mensajes de avance para identificar la etapa actual, los rasters que se están proyectando, los dataframes generados, el modelo utilizado y las rutas de salida de la predicción.

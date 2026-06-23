@@ -23,7 +23,7 @@ create_dataframe <- function(input_folder = 'data/model_input/rasters/2024',
   output_files <- character(0)
 
   for (r in seq_len(nx * ny)) {
-    print(r)
+    message('Processing tile ', r, ' of ', nx * ny)
     raster <- raster_splited[[r]]
 
     # Convert to dataframe and save it.
@@ -31,6 +31,7 @@ create_dataframe <- function(input_folder = 'data/model_input/rasters/2024',
                                       xy = TRUE,
                                       na.rm = TRUE)
     if (nrow(df_raster) == 0) {
+      message('  skipped empty tile')
       next
     }
 
